@@ -4,7 +4,7 @@ import base64
 from playlist import Playlist, Track
 
 
-def get_access_token() -> str:
+def _get_access_token() -> str:
     return requests.post(
         "https://accounts.spotify.com/api/token",
         data={"grant_type": "client_credentials"},
@@ -21,11 +21,11 @@ def get_access_token() -> str:
     ).json()["access_token"]
 
 
-def get_playlist(access_token: str, playlist_link: str) -> Playlist:
+def get_playlist(playlist_link: str) -> Playlist:
     playlist_id = playlist_link.split("/")[-1]
     playlist_data = requests.get(
         f"https://api.spotify.com/v1/playlists/{playlist_id}",
-        headers={"Authorization": f"Bearer {access_token}"},
+        headers={"Authorization": f"Bearer {_get_access_token()}"},
     ).json()
     tracks = [
         Track(

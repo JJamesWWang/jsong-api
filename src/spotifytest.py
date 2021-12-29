@@ -11,17 +11,8 @@ def playlist_link() -> str:
 
 
 @pytest.fixture
-def access_token() -> str:
-    return spotify.get_access_token()
-
-
-@pytest.fixture
-def playlist(playlist_link, access_token) -> Playlist:
-    return spotify.get_playlist(access_token, playlist_link)
-
-
-def test_get_access_token():
-    assert isinstance(spotify.get_access_token(), str)
+def playlist(playlist_link) -> Playlist:
+    return spotify.get_playlist(playlist_link)
 
 
 def test_get_playlist(playlist):
