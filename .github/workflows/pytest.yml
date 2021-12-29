@@ -20,3 +20,5 @@ jobs:
           echo SPOTIFY_CLIENT_SECRET=${{ secrets.SPOTIFY_CLIENT_SECRET }} >> .env
       - name: Run Tests
         run: pytest
+      - name: Coverage Report
+        run: coverage run -m pytest
