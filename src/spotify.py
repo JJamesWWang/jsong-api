@@ -49,5 +49,5 @@ def get_playlist(access_token: str, playlist_link: str) -> Playlist:
     return Playlist(name=playlist_data["name"], tracks=tracks)
 
 
-def convert_to_query(track: Track) -> str:
+def querify(track: Track) -> str:
     return f"{track.name} - {', '.join(track.artists)}"

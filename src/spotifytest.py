@@ -41,16 +41,16 @@ def test_playlist_tracks_correct(playlist):
         assert track.artists in [["f(x)"], ["IZ*ONE"], ["JO YURI"]]
 
 
-def test_convert_to_query():
+def test_querify():
     assert (
-        spotify.convert_to_query(spotify.Track(name="Electric Shock", artists=["f(x)"]))
+        spotify.querify(spotify.Track(name="Electric Shock", artists=["f(x)"]))
         == "Electric Shock - f(x)"
     )
     assert (
-        spotify.convert_to_query(spotify.Track(name="A", artists=["B", "C", "D"]))
+        spotify.querify(spotify.Track(name="A", artists=["B", "C", "D"]))
         == "A - B, C, D"
     )
     assert (
-        spotify.convert_to_query(spotify.Track(name="A", artists=["B C", "D E"]))
+        spotify.querify(spotify.Track(name="A", artists=["B C", "D E"]))
         == "A - B C, D E"
     )
