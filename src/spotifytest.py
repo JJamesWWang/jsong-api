@@ -1,5 +1,6 @@
 import pytest
 import spotify
+from spotify import Playlist, Track
 
 
 @pytest.fixture
@@ -15,7 +16,7 @@ def access_token() -> str:
 
 
 @pytest.fixture
-def playlist(playlist_link, access_token) -> spotify.Playlist:
+def playlist(playlist_link, access_token) -> Playlist:
     return spotify.get_playlist(access_token, playlist_link)
 
 
@@ -24,7 +25,7 @@ def test_get_access_token():
 
 
 def test_get_playlist(playlist):
-    assert isinstance(playlist, spotify.Playlist)
+    assert isinstance(playlist, Playlist)
 
 
 def test_playlist_name(playlist):
@@ -43,14 +44,8 @@ def test_playlist_tracks_correct(playlist):
 
 def test_querify():
     assert (
-        spotify.querify(spotify.Track(name="Electric Shock", artists=["f(x)"]))
+        spotify.querify(Track(name="Electric Shock", artists=["f(x)"]))
         == "Electric Shock - f(x)"
     )
-    assert (
-        spotify.querify(spotify.Track(name="A", artists=["B", "C", "D"]))
-        == "A - B, C, D"
-    )
-    assert (
-        spotify.querify(spotify.Track(name="A", artists=["B C", "D E"]))
-        == "A - B C, D E"
-    )
+    assert spotify.querify(Track(name="A", artists=["B", "C", "D"])) == "A - B, C, D"
+    assert spotify.querify(Track(name="A", artists=["B C", "D E"])) == "A - B C, D E"
