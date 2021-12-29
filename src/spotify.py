@@ -36,6 +36,3 @@ def get_playlist(playlist_link: str) -> Playlist:
     ]
     return Playlist(name=playlist_data["name"], tracks=tracks)
 
-
-def querify(track: Track) -> str:
-    return f"{track.name} - {', '.join(track.artists)}"

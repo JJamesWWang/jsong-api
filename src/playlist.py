@@ -11,3 +11,7 @@ class Track:
 class Playlist:
     name: str
     tracks: list[Track]
+
+
+def querify(track: Track) -> str:
+    return f"{track.name} - {', '.join(track.artists)}"
