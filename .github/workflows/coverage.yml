@@ -3,7 +3,7 @@ name: Coverage Report
 on: [push, pull_request]
 
 jobs:
-  lint:
+  report:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -13,7 +13,7 @@ jobs:
           python-version: 3.9
       - name: Install Dependencies
         run: |
-        pip install pytest
-        pip install coverage
+          pip install pytest
+          pip install coverage
       - name: Run Coverage Report
         run: coverage run -m pytest
