@@ -1,6 +1,6 @@
 import pytest
 import spotify
-from playlist import Playlist, Track
+from playlist import Playlist
 
 
 @pytest.fixture

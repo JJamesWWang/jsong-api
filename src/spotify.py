@@ -35,4 +35,3 @@ def get_playlist(playlist_link: str) -> Playlist:
         for track in playlist_data["tracks"]["items"]
     ]
     return Playlist(name=playlist_data["name"], tracks=tracks)
-
