@@ -39,3 +39,18 @@ def test_playlist_tracks_correct(playlist):
     for track in playlist.tracks:
         assert track.name in ["Electric Shock", "D-D-DANCE", "GLASSY"]
         assert track.artists in [["f(x)"], ["IZ*ONE"], ["JO YURI"]]
+
+
+def test_convert_to_query():
+    assert (
+        spotify.convert_to_query(spotify.Track(name="Electric Shock", artists=["f(x)"]))
+        == "Electric Shock - f(x)"
+    )
+    assert (
+        spotify.convert_to_query(spotify.Track(name="A", artists=["B", "C", "D"]))
+        == "A - B, C, D"
+    )
+    assert (
+        spotify.convert_to_query(spotify.Track(name="A", artists=["B C", "D E"]))
+        == "A - B C, D E"
+    )
