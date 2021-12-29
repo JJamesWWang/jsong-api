@@ -1,7 +1,7 @@
 import requests
 from decouple import config
 import base64
-from dataclasses import dataclass
+from playlist import Playlist, Track
 
 
 def get_access_token() -> str:
@@ -19,18 +19,6 @@ def get_access_token() -> str:
             "Content-Type": "application/x-www-form-urlencoded",
         },
     ).json()["access_token"]
-
-
-@dataclass
-class Track:
-    name: str
-    artists: list[str]
-
-
-@dataclass
-class Playlist:
-    name: str
-    tracks: list[Track]
 
 
 def get_playlist(access_token: str, playlist_link: str) -> Playlist:
