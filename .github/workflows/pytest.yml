@@ -14,9 +14,9 @@ jobs:
       - name: Install Dependencies
         run: pip install -r requirements.txt
       - name: Create env file
-      run: |
-        touch .env
-        echo SPOTIFY_CLIENT_ID=${{ secrets.SPOTIFY_CLIENT_ID }} >> .env
-        echo SPOTIFY_CLIENT_SECRET=${{ secrets.SPOTIFY_CLIENT_SECRET }} >> .env
+        run: |
+          touch .env
+          echo SPOTIFY_CLIENT_ID=${{ secrets.SPOTIFY_CLIENT_ID }} >> .env
+          echo SPOTIFY_CLIENT_SECRET=${{ secrets.SPOTIFY_CLIENT_SECRET }} >> .env
       - name: Run Tests
         run: pytest
