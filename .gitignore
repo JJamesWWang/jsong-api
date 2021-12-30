@@ -34,3 +34,6 @@ dmypy.json
 
 # vscode
 .vscode/
+
+# youtube_dl
+downloads/
