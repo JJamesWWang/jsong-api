@@ -1,6 +1,7 @@
 import youtube_dl
 from playlist import querify, Track
 from dataclasses import dataclass
+from pathlib import Path
 
 
 @dataclass
@@ -10,10 +11,11 @@ class DownloadedTrack:
 
 
 def _generate_options(track: Track) -> dict:
+    BASE_DIR = Path(__file__).resolve().parent.parent
     return {
         "format": "bestaudio/best",
         "noplaylist": True,
-        "outtmpl": f"../downloads/{querify(track)}.%(ext)s",
+        "outtmpl": f"{BASE_DIR}/downloads/{querify(track)}.%(ext)s",
     }
 
 
