@@ -2,15 +2,17 @@ from playlist import Track
 from downloader import DownloadedTrack, download, fileize
 import pytest
 from pathlib import Path
+import os
 
 
-@pytest.mark.skip(reason="Takes too long")
+# @pytest.mark.skip(reason="Takes too long")
 def test_download():
     track = Track(name="Bon Bon Chocolat", artists=["EVERGLOW"])
     dtrack = download(track)
     assert isinstance(dtrack, DownloadedTrack)
     assert dtrack.track == track
     assert dtrack.extension == "webm"
+    assert os.path.exists(fileize(dtrack))
 
 
 def test_fileize():
