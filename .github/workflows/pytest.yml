@@ -12,7 +12,9 @@ jobs:
         with:
           python-version: 3.9
       - name: Install Dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+          apt-get install ffmpeg libavcodec-extra
       - name: Create env file
         run: |
           touch .env
