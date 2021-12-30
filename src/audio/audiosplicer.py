@@ -6,7 +6,7 @@ import os
 
 
 def temp_fileize(dtrack: DownloadedTrack):
-    BASE_DIR = Path(__file__).resolve().parent.parent
+    BASE_DIR = Path(__file__).resolve().parent.parent.parent
     return f"{BASE_DIR}/downloads/temp/{querify(dtrack.track)}.{dtrack.extension}"
 
 

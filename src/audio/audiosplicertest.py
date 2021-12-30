@@ -6,7 +6,7 @@ import os
 
 
 def test_temp_fileize():
-    BASE_DIR = Path(__file__).resolve().parent.parent
+    BASE_DIR = Path(__file__).resolve().parent.parent.parent
     assert (
         temp_fileize(
             DownloadedTrack(track=Track(name="A", artists=["B"]), extension="mp3")

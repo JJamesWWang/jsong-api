@@ -11,7 +11,7 @@ class DownloadedTrack:
 
 
 def _generate_options(track: Track) -> dict:
-    BASE_DIR = Path(__file__).resolve().parent.parent
+    BASE_DIR = Path(__file__).resolve().parent.parent.parent
     return {
         "format": "bestaudio/best",
         "noplaylist": True,
@@ -20,7 +20,7 @@ def _generate_options(track: Track) -> dict:
 
 
 def fileize(dtrack: DownloadedTrack):
-    BASE_DIR = Path(__file__).resolve().parent.parent
+    BASE_DIR = Path(__file__).resolve().parent.parent.parent
     return f"{BASE_DIR}/downloads/{querify(dtrack.track)}.{dtrack.extension}"
 
 
