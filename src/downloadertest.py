@@ -1,11 +1,9 @@
 from playlist import Track
 from downloader import DownloadedTrack, download, fileize
-import pytest
 from pathlib import Path
 import os
 
 
-# @pytest.mark.skip(reason="Takes too long")
 def test_download():
     track = Track(name="Bon Bon Chocolat", artists=["EVERGLOW"])
     dtrack = download(track)

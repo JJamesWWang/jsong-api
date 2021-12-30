@@ -3,7 +3,6 @@ from downloader import download, DownloadedTrack
 from audiosplicer import temp_fileize, splice
 from pathlib import Path
 import os
-import pytest
 
 
 def test_temp_fileize():
@@ -16,7 +15,6 @@ def test_temp_fileize():
     )
 
 
-# @pytest.mark.skip("Dependends on downloader")
 def test_splice():
     dtrack = download(Track(name="Bon Bon Chocolat", artists=["EVERGLOW"]))
     splice(dtrack, start=100000, end=110000)
