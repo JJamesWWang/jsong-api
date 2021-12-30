@@ -1,0 +1,9 @@
+services:
+  web:
+    image: jsong
+    build: .
+    command: uvicorn src.main:app
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
