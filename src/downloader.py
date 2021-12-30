@@ -20,7 +20,8 @@ def _generate_options(track: Track) -> dict:
 
 
 def fileize(dtrack: DownloadedTrack):
-    return f"{querify(dtrack.track)}.{dtrack.extension}"
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    return f"{BASE_DIR}/downloads/{querify(dtrack.track)}.{dtrack.extension}"
 
 
 def download(track: Track) -> DownloadedTrack:
