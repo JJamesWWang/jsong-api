@@ -3,6 +3,7 @@ from jsong.routers.websocket.connection import Connection
 
 
 @dataclass
-class User(Connection):
+class User:
+    connection: Connection
     username: str
     is_host: bool = False

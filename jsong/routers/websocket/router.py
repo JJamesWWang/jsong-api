@@ -13,6 +13,7 @@ async def get(websocket: WebSocket):
     connection = await connect(connections, websocket)
     connections[connection.uid] = connection
     await connection.websocket.send_json(messages.connected(connection))
+    await listen_for_messages(connection)
 
 
 @router.get("/ws/{uid}/{username}")
@@ -21,12 +22,12 @@ async def auth(uid: str, username: str):
     if not connection:
         raise HTTPException(status_code=404, detail="Connection not found")
     users[uid] = User(connection, username)
-    await listen_for_messages(users[uid])
 
 
-async def listen_for_messages(user: User):
+async def listen_for_messages(connection: Connection):
     try:
         while True:
-            data = await user.websocket.receive_json()
+            data = await connection.websocket.receive_json()
     except WebSocketDisconnect:
-        users.pop(user, None)
+        connections.pop(connection.uid, None)
+        users.pop(connection.uid, None)
