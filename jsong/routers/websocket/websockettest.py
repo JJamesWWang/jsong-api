@@ -7,4 +7,5 @@ client = TestClient(router)
 
 def test_websocket_endpoint():
     with client.websocket_connect("/ws") as websocket:
-        assert websocket.receive_json()
+        data = websocket.receive_json()
+        assert data["type"] == "connected"
