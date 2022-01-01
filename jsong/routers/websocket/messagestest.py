@@ -10,5 +10,5 @@ def user():
 
 def test_connected(user: User):
     message = messages.connected(user)
-    assert message["type"] == "connected"
+    assert message["event"] == "connected"
     assert len(message["uid"]) > 0
