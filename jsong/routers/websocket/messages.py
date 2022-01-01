@@ -1,4 +1,4 @@
-from user import User
+from jsong.routers.websocket.user import User
 
 
 def connected(user: User):

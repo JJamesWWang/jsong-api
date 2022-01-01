@@ -1,6 +1,6 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
-from user import UserManager
-import messages
+from jsong.routers.websocket.user import UserManager
+from jsong.routers.websocket import messages
 
 router = APIRouter()
 user_manager = UserManager()

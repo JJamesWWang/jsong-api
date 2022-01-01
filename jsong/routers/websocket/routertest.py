@@ -1,5 +1,5 @@
 from fastapi.testclient import TestClient
-from router import router
+from jsong.routers.websocket.router import router
 
 
 client = TestClient(router)

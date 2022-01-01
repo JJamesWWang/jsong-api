@@ -1,5 +1,5 @@
-from user import User
-import messages
+from jsong.routers.websocket.user import User
+from jsong.routers.websocket import messages
 import pytest
 
 
