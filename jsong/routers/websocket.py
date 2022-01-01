@@ -28,6 +28,7 @@ manager = ConnectionManager()
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
+    await websocket.send_json({"message": "Hello World"})
     try:
         while True:
             data = await websocket.receive_text()
