@@ -1,14 +1,14 @@
-from jsong.routers.websocket.user import User
+from jsong.routers.websocket.connection import Connection
 from jsong.routers.websocket import messages
 import pytest
 
 
 @pytest.fixture
-def user():
-    return User(websocket=None, uid="1", username="K")
+def connection():
+    return Connection(websocket=None, uid="1")
 
 
-def test_connected(user: User):
-    message = messages.connected(user)
+def test_connected(connection: Connection):
+    message = messages.connected(connection)
     assert message["event"] == "connected"
     assert len(message["uid"]) > 0

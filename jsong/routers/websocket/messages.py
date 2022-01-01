@@ -1,5 +1,5 @@
-from jsong.routers.websocket.user import User
+from jsong.routers.websocket.connection import Connection
 
 
-def connected(user: User):
-    return {"event": "connected", "uid": user.uid}
+def connected(connection: Connection):
+    return {"event": "connected", "uid": connection.uid}
