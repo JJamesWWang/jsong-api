@@ -24,12 +24,3 @@ async def connect(connections: set[Connection], websocket: WebSocket) -> Connect
     while (c := Connection(websocket, _gen_uid())) in connections:
         c = Connection(websocket, _gen_uid())
     return c
-
-
-# async def send_client(self, message: str, websocket: WebSocket) -> None:
-#     await websocket.send_text(message)
-
-
-# async def broadcast(self, message: str) -> None:
-#     for user in self.connections:
-#         await user.websocket.send_text(message)
