@@ -1,5 +1,5 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
-from jsong.member import connect, Member
+from jsong.models.member import connect, Member
 from jsong.routers.websocket import messages
 
 router = APIRouter()
