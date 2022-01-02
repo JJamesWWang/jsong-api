@@ -23,6 +23,8 @@ async def broadcast(data: dict):
 async def listen_for_messages(member: Member):
     try:
         while True:
-            data = await member.websocket.receive_json()
+            content = await member.websocket.receive_json()
+            await broadcast(messages.chat(member, content))
     except WebSocketDisconnect:
         members.pop(member.uid, None)
+        await broadcast(messages.disconnected(member))
