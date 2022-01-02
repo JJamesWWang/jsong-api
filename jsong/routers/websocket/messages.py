@@ -1,5 +1,5 @@
-from jsong.routers.websocket.connection import Connection
+from jsong.member import Member
 
 
-def connected(connection: Connection):
-    return {"event": "connected", "uid": connection.uid}
+def connected(member: Member):
+    return {"event": "connected", "payload": member.dict(exclude={"websocket"})}

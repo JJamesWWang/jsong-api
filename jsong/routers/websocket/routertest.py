@@ -6,7 +6,10 @@ client = TestClient(router)
 
 
 def test_websocket_endpoint():
-    with client.websocket_connect("/ws") as websocket:
+    with client.websocket_connect("/ws/hey") as websocket:
         data = websocket.receive_json()
         assert data["event"] == "connected"
-        assert len(data["uid"]) > 0
+        payload = data["payload"]
+        assert len(payload["uid"]) > 0
+        assert payload["username"] == "hey"
+        assert payload["is_host"] is False

@@ -1,33 +1,27 @@
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect, HTTPException
-from jsong.routers.websocket.connection import connect, Connection
-from jsong.routers.websocket.user import User
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from jsong.member import connect, Member
 from jsong.routers.websocket import messages
 
 router = APIRouter()
-connections: dict[str, Connection] = {}
-users: dict[str, User] = {}
+members: dict[str, Member] = {}
 
 
-@router.websocket("/ws")
-async def get(websocket: WebSocket):
-    connection = await connect(connections, websocket)
-    connections[connection.uid] = connection
-    await connection.websocket.send_json(messages.connected(connection))
-    await listen_for_messages(connection)
+@router.websocket("/ws/{username}")
+async def get_websocket(websocket: WebSocket, username: str):
+    member = await connect(members, websocket, username)
+    members[member.uid] = member
+    await broadcast(messages.connected(member))
+    await listen_for_messages(member)
 
 
-@router.get("/ws/{uid}/{username}")
-async def auth(uid: str, username: str):
-    connection = connections.pop(uid, None)
-    if not connection:
-        raise HTTPException(status_code=404, detail="Connection not found")
-    users[uid] = User(connection, username)
+async def broadcast(data: dict):
+    for member in members.values():
+        await member.websocket.send_json(data)
 
 
-async def listen_for_messages(connection: Connection):
+async def listen_for_messages(member: Member):
     try:
         while True:
-            data = await connection.websocket.receive_json()
+            data = await member.websocket.receive_json()
     except WebSocketDisconnect:
-        connections.pop(connection.uid, None)
-        users.pop(connection.uid, None)
+        members.pop(member.uid, None)
