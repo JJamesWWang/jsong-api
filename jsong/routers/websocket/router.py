@@ -9,6 +9,7 @@ members: dict[str, Member] = {}
 @router.websocket("/ws/{username}")
 async def get_websocket(websocket: WebSocket, username: str):
     member = await connect(members, websocket, username)
+    await member.websocket.send_json(messages.context(members))
     members[member.uid] = member
     await broadcast(messages.connected(member))
     await listen_for_messages(member)
