@@ -31,4 +31,4 @@ def test_websocket_connect():
         payload = message["payload"]
         assert len(payload["uid"]) > 0
         assert payload["username"] == "hey"
-        assert payload["is_host"] is False
+        assert payload["isHost"] is False

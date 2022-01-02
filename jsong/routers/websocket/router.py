@@ -30,14 +30,13 @@ async def listen_for_messages(member: Member):
         await broadcast(messages.disconnected(member))
 
 
-@router.put("/lobby/host", status_code=200)
+@router.put("/lobby/host/{uid}", status_code=200)
 async def claim_host(uid: str):
     if uid not in members:
         raise HTTPException(status_code=404, detail="Member not found")
-    member = members[uid]
     for m in members.values():
         members[m.uid] = m.with_host(m.uid == uid)
-    await broadcast(messages.transfer_host(member))
+    await broadcast(messages.transfer_host(members[uid]))
 
 
 # @router.put("/lobby/playlist", status_code=200)
