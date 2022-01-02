@@ -1,4 +1,4 @@
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, HTTPException
 from jsong.models.member import connect, Member
 from jsong.routers.websocket import messages
 
@@ -28,3 +28,18 @@ async def listen_for_messages(member: Member):
     except WebSocketDisconnect:
         members.pop(member.uid, None)
         await broadcast(messages.disconnected(member))
+
+
+@router.put("/lobby/host", status_code=200)
+async def claim_host(uid: str):
+    if uid not in members:
+        raise HTTPException(status_code=404, detail="Member not found")
+    member = members[uid]
+    for m in members.values():
+        members[m.uid] = m.with_host(m.uid == uid)
+    await broadcast(messages.transfer_host(member))
+
+
+# @router.put("/lobby/playlist", status_code=200)
+# async def set_playlist(playlist: str):
+#     pass

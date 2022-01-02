@@ -16,6 +16,10 @@ class Member(BaseModel):
     def __eq__(self, __o: object) -> bool:
         return isinstance(__o, Member) and self.uid == __o.uid
 
+    def with_host(self, is_host: bool):
+        self.is_host = is_host
+        return self
+
     class Config:
         arbitrary_types_allowed = True
 

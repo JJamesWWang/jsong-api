@@ -28,3 +28,12 @@ def chat(member: Member, content: str):
             "content": content,
         },
     }
+
+
+def transfer_host(member: Member):
+    return {
+        "event": "transfer_host",
+        "payload": {
+            "member": _json(member),
+        },
+    }
