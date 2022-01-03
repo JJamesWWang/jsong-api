@@ -1,4 +1,4 @@
-from jsong.models.member import Member
+from jsong.member import Member
 
 
 def context(members: dict[str, Member]):

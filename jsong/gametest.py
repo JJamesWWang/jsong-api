@@ -3,7 +3,7 @@ from jsong.audio.playlist import Playlist, Track
 from jsong.game import Game, GameSettings, Player
 import pytest
 
-from jsong.models.member import Member
+from jsong.member import Member
 
 
 @pytest.fixture

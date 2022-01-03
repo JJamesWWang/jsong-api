@@ -1,8 +1,8 @@
 from fastapi.testclient import TestClient
-from jsong.routers.websocket.router import router
+from jsong.main import app
 
 
-client = TestClient(router)
+client = TestClient(app)
 
 
 def test_websocket_context():
