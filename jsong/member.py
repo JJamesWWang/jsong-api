@@ -16,9 +16,14 @@ class Member(BaseModel):
     def __eq__(self, __o: object) -> bool:
         return isinstance(__o, Member) and self.uid == __o.uid
 
-    def with_host(self, is_host: bool):
-        self.isHost = is_host
-        return self
+    @classmethod
+    def with_host(cls, member: "Member", is_host: bool):
+        return cls(
+            uid=member.uid,
+            websocket=member.websocket,
+            username=member.username,
+            isHost=is_host,
+        )
 
     class Config:
         arbitrary_types_allowed = True
