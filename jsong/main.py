@@ -1,5 +1,6 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from jsong.member import connect, Member
 from jsong.audio.playlist import Playlist
 from jsong.audio.spotify import get_playlist
@@ -64,9 +65,13 @@ async def claim_host(uid: str):
     await broadcast(messages.transfer_host(JSONG_STATE.members[uid]))
 
 
-@app.put("/lobby/playlist", status_code=200)
-async def set_playlist(link: str):
+class PlaylistLink(BaseModel):
+    link: str
+
+
+@app.put("/lobby/playlist/", status_code=200)
+async def set_playlist(data: PlaylistLink):
     try:
-        JSONG_STATE.playlist = get_playlist(link)
+        JSONG_STATE.playlist = get_playlist(data.link)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

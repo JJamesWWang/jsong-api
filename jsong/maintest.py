@@ -69,3 +69,13 @@ def test_websocket_claim_host():
             claim_host = websocket1.receive_json()
             payload = claim_host["payload"]
             assert payload["username"] == "hi"
+
+
+def test_set_playlist():
+    response = client.put(
+        "/lobby/playlist/",
+        json={
+            "link": "https://open.spotify.com/playlist/7Ia4x1WOfXZEwx8LvpleFI?si=1e046cac7db04acd"
+        },
+    )
+    assert response.status_code == 200
