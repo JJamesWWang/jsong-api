@@ -8,7 +8,7 @@ class Member(BaseModel):
     uid: str
     websocket: WebSocket
     username: str
-    isHost: bool = False    # use camelCase because it's directly serialized to JSON
+    isHost: bool = False  # use camelCase because it's directly serialized to JSON
 
     def __hash__(self):
         return hash(self.uid)
