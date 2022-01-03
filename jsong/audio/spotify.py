@@ -1,7 +1,7 @@
 import requests
 from decouple import config
 import base64
-from playlist import Playlist, Track
+from jsong.audio.playlist import Playlist, Track
 
 
 def _get_access_token() -> str:

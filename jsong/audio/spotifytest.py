@@ -15,10 +15,6 @@ def playlist(playlist_link) -> Playlist:
     return spotify.get_playlist(playlist_link)
 
 
-def test_get_playlist(playlist):
-    assert isinstance(playlist, Playlist)
-
-
 def test_playlist_name(playlist):
     assert playlist.name == "Test Playlist"
 
