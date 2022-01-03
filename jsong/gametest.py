@@ -51,9 +51,9 @@ def playlist():
     return Playlist(
         name="K-pop",
         tracks=[
-            Track(name="I don't know", artists=["Apink"]),
-            Track(name="Next Level", artists=["aespa"]),
-            Track(name="The Feels", artists=["TWICE"]),
+            Track(name="I don't know", artists=["Apink"], duration=0),
+            Track(name="Next Level", artists=["aespa"], duration=0),
+            Track(name="The Feels", artists=["TWICE"], duration=0),
         ],
     )
 

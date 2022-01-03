@@ -1,10 +1,23 @@
+import pytest
 from playlist import querify, Track
 
 
-def test_querify():
-    assert (
-        querify(Track(name="Electric Shock", artists=["f(x)"]))
-        == "Electric Shock - f(x)"
-    )
-    assert querify(Track(name="A", artists=["B", "C", "D"])) == "A - B, C, D"
-    assert querify(Track(name="A", artists=["B C", "D E"])) == "A - B C, D E"
+@pytest.fixture
+def track1():
+    return Track(name="Electric Shock", artists=["f(x)"], duration=0)
+
+
+@pytest.fixture
+def track2():
+    return Track(name="A", artists=["B", "C", "D"])
+
+
+@pytest.fixture
+def track3():
+    return Track(name="A", artists=["B C", "D E"])
+
+
+def test_querify(track1: Track, track2: Track, track3: Track):
+    assert querify(track1) == "Electric Shock - f(x)"
+    assert querify(track2) == "A - B, C, D"
+    assert querify(track3) == "A - B C, D E"

@@ -31,6 +31,7 @@ def get_playlist(playlist_link: str) -> Playlist:
         Track(
             name=track["track"]["name"],
             artists=[artist["name"] for artist in track["track"]["artists"]],
+            duration=track["track"]["duration_ms"],
         )
         for track in playlist_data["tracks"]["items"]
     ]

@@ -5,6 +5,7 @@ from dataclasses import dataclass
 class Track:
     name: str
     artists: list[str]
+    duration: int
 
 
 @dataclass
