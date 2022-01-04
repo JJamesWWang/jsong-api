@@ -72,6 +72,8 @@ async def listen_for_messages(member: Member):
     except WebSocketDisconnect:
         JSONG_STATE.members.pop(member.uid, None)
         await broadcast(messages.disconnected(member))
+        if len(JSONG_STATE.members) == 0:
+            JSONG_STATE.game = Game.empty()
 
 
 @app.put("/lobby/host/{uid}", status_code=200)
