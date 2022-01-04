@@ -45,7 +45,7 @@ def game(members: Iterable[tuple[str, str]], playlist: Playlist):
     return Game(
         members,
         copy.deepcopy(playlist),
-        settings=GameSettings(playlistName=playlist.name, maxRounds=2),
+        settings=GameSettings(playlist_name=playlist.name, max_rounds=2),
     )
 
 
@@ -54,7 +54,7 @@ def test_init_game_state(
 ):
     assert game.players == {"1": player, "2": player2}
     assert game.playlist == playlist.tracks
-    assert game.settings == GameSettings(playlistName=playlist.name, maxRounds=2)
+    assert game.settings == GameSettings(playlist_name=playlist.name, max_rounds=2)
     assert game.rounds == 0
     assert game.current_track is None
     assert game.is_active is True
@@ -109,7 +109,7 @@ def game2(members: Iterable[tuple[str, str]], playlist: Playlist):
     return Game(
         members,
         playlist,
-        settings=GameSettings(playlistName=playlist.name, maxRounds=5),
+        settings=GameSettings(playlist_name=playlist.name, max_rounds=5),
     )
 
 

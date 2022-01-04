@@ -44,7 +44,7 @@ def start_game(game: Game):
         "event": "start_game",
         "payload": {
             "players": list(map(lambda p: p.asdict(), game.players.values())),
-            "settings": game.settings,
+            "settings": game.settings.asdict(),
         },
     }
 

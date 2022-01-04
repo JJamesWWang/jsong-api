@@ -1,15 +1,18 @@
 from typing import Iterable
-from pydantic import BaseModel
+from dataclasses import dataclass
+from dataclasses_json import dataclass_json, LetterCase
 import random
 from jsong.audio.playlist import Track, Playlist
 from jsong.player import Player
 from dataclasses import replace
 
 
-class GameSettings(BaseModel):
-    playlistName: str
-    maxRounds: int = 10
-    playLength: int = 10
+@dataclass_json(letter_case=LetterCase.CAMEL)
+@dataclass
+class GameSettings:
+    playlist_name: str
+    max_rounds: int = 10
+    play_length: int = 10
 
 
 class Game:
@@ -21,7 +24,7 @@ class Game:
     ):
         self.players = {uid: Player(uid, username) for (uid, username) in members}
         self.playlist = playlist.tracks
-        self.settings = settings or GameSettings(playlistName=playlist.name)
+        self.settings = settings or GameSettings(playlist_name=playlist.name)
         self.rounds = 0
         self.current_track: Track = None
 
@@ -31,7 +34,7 @@ class Game:
 
     @property
     def is_active(self):
-        return self.playlist != [] and self.rounds < self.settings.maxRounds
+        return self.playlist != [] and self.rounds < self.settings.max_rounds
 
     def guess(self, uid: str, guess: str) -> bool:
         if self._should_give_points(uid, guess):
@@ -59,4 +62,4 @@ class Game:
 
     @property
     def play_length(self):
-        return self.settings.playLength
+        return self.settings.play_length
