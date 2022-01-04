@@ -79,26 +79,26 @@ def test_init_game_state(playlist: Playlist, game: Game):
 
 def test_guess_correct(game: Game, player: Player, playlist: Playlist):
     game.advance_round()
-    game.guess(player.uid, playlist.tracks[0].name)
+    assert game.guess(player.uid, playlist.tracks[0].name)
     assert game.players[player.uid].score == 1
     assert game.players[player.uid].is_correct is True
     game.advance_round()
-    game.guess(player.uid, playlist.tracks[1].name)
+    assert game.guess(player.uid, playlist.tracks[1].name)
     assert game.players[player.uid].score == 2
     assert game.players[player.uid].is_correct is True
 
 
 def test_guess_twice_no_result(game: Game, player: Player, playlist: Playlist):
     game.advance_round()
-    game.guess(player.uid, playlist.tracks[0].name)
-    game.guess(player.uid, playlist.tracks[0].name)
+    assert game.guess(player.uid, playlist.tracks[0].name)
+    assert not game.guess(player.uid, playlist.tracks[0].name)
     assert game.players[player.uid].score == 1
     assert game.players[player.uid].is_correct is True
 
 
 def test_guess_incorrect(game: Game, player: Player, playlist: Playlist):
     game.advance_round()
-    game.guess(player.uid, playlist.tracks[1].name)
+    assert not game.guess(player.uid, playlist.tracks[1].name)
     assert game.players[player.uid].score == 0
     assert game.players[player.uid].is_correct is False
 

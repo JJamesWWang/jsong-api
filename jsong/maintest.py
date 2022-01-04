@@ -1,4 +1,5 @@
 from fastapi.testclient import TestClient
+import pytest
 from jsong.main import app
 
 
@@ -69,6 +70,11 @@ def test_websocket_claim_host():
             claim_host = websocket1.receive_json()
             payload = claim_host["payload"]
             assert payload["username"] == "hi"
+
+
+def test_game_starts_only_if_playlist_set():
+    response = client.post("/lobby/start")
+    assert response.status_code == 400
 
 
 def test_set_playlist():

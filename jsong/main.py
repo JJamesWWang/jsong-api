@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from jsong.member import connect, Member
 from jsong.audio.playlist import Playlist
 from jsong.audio.spotify import get_playlist
+from jsong.game import Game
 import jsong.messages as messages
 
 app = FastAPI()
@@ -21,6 +22,7 @@ app.add_middleware(
 class GlobalState:  # my greatest mistake, but it works
     members: dict[str, Member] = {}
     playlist: Playlist = None
+    game: Game = None
 
     @classmethod
     def with_members(cls, state, members):
@@ -75,3 +77,22 @@ async def set_playlist(data: PlaylistLink):
         JSONG_STATE.playlist = get_playlist(data.link)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/lobby/start", status_code=200)
+async def start_game():
+    if not JSONG_STATE.playlist:
+        raise HTTPException(status_code=400, detail="No playlist set")
+    JSONG_STATE.game = Game(JSONG_STATE.members, JSONG_STATE.playlist)
+    await broadcast(messages.start_game())
+    await game_loop()
+    await broadcast(messages.end_game())
+
+
+async def game_loop():
+    return
+
+
+@app.post("/lobby/end", status_code=200)
+async def end_game():
+    await broadcast(messages.end_game())

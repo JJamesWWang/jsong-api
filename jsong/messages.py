@@ -35,3 +35,15 @@ def transfer_host(member: Member):
         "event": "transfer_host",
         "payload": _json(member),
     }
+
+
+def start_game():
+    return {"event": "start_game", "payload": {}}
+
+
+def correct_guess(member: Member):
+    return {"event": "correct_guess", "payload": _json(member)}
+
+
+def end_game():
+    return {"event": "end_game", "payload": {}}

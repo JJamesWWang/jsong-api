@@ -40,9 +40,11 @@ class Game:
     def is_over(self):
         return self.playlist == [] or self.rounds >= self.settings.maxRounds
 
-    def guess(self, uid: str, guess: str):
+    def guess(self, uid: str, guess: str) -> bool:
         if self._should_give_points(uid, guess):
             self.players[uid] = Player.with_correct(self.players[uid])
+            return True
+        return False
 
     def _should_give_points(self, uid: str, guess: str):
         print(self.current_track.name, guess)
