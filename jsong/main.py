@@ -39,6 +39,8 @@ JSONG_STATE: GlobalState = GlobalState()
 
 @app.websocket("/ws/{username}")
 async def get_websocket(websocket: WebSocket, username: str):
+    if JSONG_STATE.game.is_active:
+        raise HTTPException(status_code=400, detail="Game is already in progress")
     members = JSONG_STATE.members
     member = await connect(members, websocket, username)
     await member.websocket.send_json(messages.context(members))
