@@ -5,12 +5,14 @@ from pydantic import BaseModel
 from toolz import dicttoolz
 import asyncio
 import random
+from dataclasses import replace
 from jsong.member import connect, Member
 from jsong.audio.playlist import Playlist
 from jsong.audio.spotify import get_playlist
 from jsong.audio.downloader import download
 from jsong.audio.audiosplicer import splice, temp_fileize
 from jsong.game import Game
+from jsong.player import Player
 import jsong.messages as messages
 
 app = FastAPI()
@@ -59,10 +61,12 @@ async def listen_for_messages(member: Member):
     try:
         while True:
             content = await member.websocket.receive_json()
-            if JSONG_STATE.game.is_active and JSONG_STATE.game.guess(
-                member.uid, content
+            if (
+                JSONG_STATE.game.is_active
+                and JSONG_STATE.game.guess(member.uid, content)
+                and (player := JSONG_STATE.game.players.get(member.uid))
             ):
-                await broadcast(messages.correct_guess(member))
+                await broadcast(messages.correct_guess(player))
             else:
                 await broadcast(messages.chat(member, content))
     except WebSocketDisconnect:
@@ -97,7 +101,7 @@ async def start_game():
     if not JSONG_STATE.playlist:
         raise HTTPException(status_code=400, detail="No playlist set")
     JSONG_STATE.game = Game(JSONG_STATE.members, JSONG_STATE.playlist)
-    await broadcast(messages.start_game())
+    await broadcast(messages.start_game(JSONG_STATE.game))
     await game_loop()
     await broadcast(messages.end_game())
 
@@ -111,7 +115,7 @@ async def game_loop():
         await wait_until_players_ready()
         await broadcast(messages.start_round())
         await wait_until_track_done_playing()
-        await broadcast(messages.end_round())
+        await broadcast(messages.end_round(JSONG_STATE.game))
 
 
 def splice_track():
@@ -122,8 +126,9 @@ def splice_track():
 
 
 async def wait_until_players_ready():
-    while not all(m.isReady for m in JSONG_STATE.members.values()):
+    while not all(p.isReady for p in JSONG_STATE.game.players.values()):
         await asyncio.sleep(1)
+
 
 @app.get("/lobby/track", status_code=200)
 async def get_current_track():
@@ -133,11 +138,11 @@ async def get_current_track():
 
 @app.post("/lobby/ready/{uid}", status_code=200)
 async def set_ready(uid: str):
-    if uid not in JSONG_STATE.members:
-        raise HTTPException(status_code=404, detail="Member not found")
-    member = JSONG_STATE.members[uid]
+    if uid not in JSONG_STATE.game.players:
+        raise HTTPException(status_code=404, detail="Player not found")
+    player = JSONG_STATE.game.players[uid]
     JSONG_STATE.members = dicttoolz.assoc(
-        JSONG_STATE.members, uid, Member.with_isReady(member, True)
+        JSONG_STATE.members, uid, replace(player, is_ready=True)
     )
 
 

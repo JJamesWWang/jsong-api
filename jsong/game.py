@@ -1,24 +1,9 @@
 from typing import Iterable
-from dataclasses import dataclass
 from pydantic import BaseModel
 import random
-
 from jsong.audio.playlist import Track, Playlist
-
-
-@dataclass
-class Player:
-    uid: str
-    score: int = 0
-    is_correct: bool = False
-
-    @classmethod
-    def with_correct(cls, player):
-        return cls(player.uid, player.score + 1, True)
-
-    @classmethod
-    def with_advance_round(cls, player):
-        return cls(player.uid, player.score, False)
+from jsong.player import Player
+from dataclasses import replace
 
 
 class GameSettings(BaseModel):
@@ -29,9 +14,12 @@ class GameSettings(BaseModel):
 
 class Game:
     def __init__(
-        self, uids: Iterable[str], playlist: Playlist, settings: GameSettings = None
+        self,
+        members: Iterable[tuple[str, str]],
+        playlist: Playlist,
+        settings: GameSettings = None,
     ):
-        self.players = {uid: Player(uid) for uid in uids}
+        self.players = {uid: Player(uid, username) for (uid, username) in members}
         self.playlist = playlist.tracks
         self.settings = settings or GameSettings(playlistName=playlist.name)
         self.rounds = 0
@@ -47,7 +35,8 @@ class Game:
 
     def guess(self, uid: str, guess: str) -> bool:
         if self._should_give_points(uid, guess):
-            self.players[uid] = Player.with_correct(self.players[uid])
+            player = self.players[uid]
+            self.players[uid] = replace(player, score=player.score + 1, is_correct=True)
             return True
         return False
 
@@ -64,7 +53,7 @@ class Game:
                 random.randint(0, len(self.playlist) - 1)
             )
             self.players = {
-                uid: Player.with_advance_round(player)
+                uid: replace(player, is_correct=False, is_ready=False)
                 for uid, player in self.players.items()
             }
 

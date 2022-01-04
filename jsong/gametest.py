@@ -1,6 +1,7 @@
 from typing import Iterable
 from jsong.audio.playlist import Playlist, Track
-from jsong.game import Game, GameSettings, Player
+from jsong.game import Game, GameSettings
+from jsong.player import Player
 import pytest
 import random
 import copy
@@ -8,42 +9,22 @@ import copy
 
 @pytest.fixture
 def player():
-    return Player("1")
+    return Player("1", "1")
+
+
+@pytest.fixture
+def player2():
+    return Player("2", "2")
 
 
 @pytest.fixture
 def correct_player():
-    return Player("1", 1, True)
-
-
-def test_player_with_correct(player: Player):
-    player = Player.with_correct(player)
-    assert player.uid == "1"
-    assert player.score == 1
-    assert player.is_correct is True
-
-
-def test_player_with_advance_round_correct(correct_player: Player):
-    player = Player.with_advance_round(correct_player)
-    assert player.uid == "1"
-    assert player.score == 1
-    assert player.is_correct is False
-
-
-def test_player_with_advance_round_incorrect(player: Player):
-    player = Player("1")
-    player = Player.with_advance_round(player)
-    assert player.uid == "1"
-    assert player.score == 0
-    assert player.is_correct is False
-
-
-########################################################################################
+    return Player("1", "1", 1, True)
 
 
 @pytest.fixture
-def uids():
-    return ["1", "2"]
+def members():
+    return [("1", "1"), ("2", "2")]
 
 
 @pytest.fixture
@@ -59,17 +40,19 @@ def playlist():
 
 
 @pytest.fixture
-def game(uids: Iterable[str], playlist: Playlist):
+def game(members: Iterable[tuple[str, str]], playlist: Playlist):
     random.seed(1)  # picks the first one all three times
     return Game(
-        uids,
+        members,
         copy.deepcopy(playlist),
         settings=GameSettings(playlistName=playlist.name, maxRounds=2),
     )
 
 
-def test_init_game_state(playlist: Playlist, game: Game):
-    assert game.players == {"1": Player("1"), "2": Player("2")}
+def test_init_game_state(
+    player: Player, player2: Player, playlist: Playlist, game: Game
+):
+    assert game.players == {"1": player, "2": player2}
     assert game.playlist == playlist.tracks
     assert game.settings == GameSettings(playlistName=playlist.name, maxRounds=2)
     assert game.rounds == 0
@@ -122,9 +105,11 @@ def test_game_over_by_rounds(game: Game):
 
 
 @pytest.fixture
-def game2(uids: Iterable[str], playlist: Playlist):
+def game2(members: Iterable[tuple[str, str]], playlist: Playlist):
     return Game(
-        uids, playlist, settings=GameSettings(playlistName=playlist.name, maxRounds=5)
+        members,
+        playlist,
+        settings=GameSettings(playlistName=playlist.name, maxRounds=5),
     )
 
 

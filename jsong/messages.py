@@ -1,4 +1,5 @@
 from jsong.member import Member
+from jsong.player import Player
 
 
 def context(members: dict[str, Member]):
@@ -49,8 +50,8 @@ def start_round():
     return {"event": "start_round", "payload": {}}
 
 
-def correct_guess(member: Member):
-    return {"event": "correct_guess", "payload": _json(member)}
+def correct_guess(player: Player):
+    return {"event": "correct_guess", "payload": _json(player)}
 
 
 def end_round():

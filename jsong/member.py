@@ -9,7 +9,6 @@ class Member(BaseModel):
     websocket: WebSocket
     username: str
     isHost: bool = False  # use camelCase because it's directly serialized to JSON
-    isReady: bool = False
 
     def __hash__(self):
         return hash(self.uid)
@@ -24,17 +23,6 @@ class Member(BaseModel):
             websocket=member.websocket,
             username=member.username,
             isHost=is_host,
-            isReady=member.isReady,
-        )
-
-    @classmethod
-    def with_isReady(cls, member: "Member", is_ready: bool):
-        return cls(
-            uid=member.uid,
-            websocket=member.websocket,
-            username=member.username,
-            isHost=member.isHost,
-            isReady=is_ready,
         )
 
     class Config:
