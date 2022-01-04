@@ -41,8 +41,20 @@ def start_game():
     return {"event": "start_game", "payload": {}}
 
 
+def next_round():
+    return {"event": "next_round", "payload": {}}
+
+
+def start_round():
+    return {"event": "start_round", "payload": {}}
+
+
 def correct_guess(member: Member):
     return {"event": "correct_guess", "payload": _json(member)}
+
+
+def end_round():
+    return {"event": "end_round", "payload": {}}
 
 
 def end_game():

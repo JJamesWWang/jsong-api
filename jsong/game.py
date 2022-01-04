@@ -24,6 +24,7 @@ class Player:
 class GameSettings(BaseModel):
     playlistName: str
     maxRounds: int = 10
+    playLength: int = 10
 
 
 class Game:
@@ -66,3 +67,7 @@ class Game:
                 uid: Player.with_advance_round(player)
                 for uid, player in self.players.items()
             }
+
+    @property
+    def play_length(self):
+        return self.settings.playLength
