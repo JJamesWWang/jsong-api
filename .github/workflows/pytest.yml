@@ -15,6 +15,7 @@ jobs:
         run: |
           pip install -r requirements.txt
           sudo apt-get install ffmpeg libavcodec-extra
+          sudo apt install aria2
       - name: Create env file
         run: |
           touch .env
