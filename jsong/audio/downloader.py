@@ -1,5 +1,5 @@
 import youtube_dl
-from playlist import querify, Track
+from jsong.audio.playlist import querify, Track
 from dataclasses import dataclass
 from pathlib import Path
 

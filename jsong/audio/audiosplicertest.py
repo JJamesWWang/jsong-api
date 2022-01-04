@@ -18,12 +18,12 @@ def dtrack(track: Track):
 
 def test_temp_fileize(dtrack: DownloadedTrack):
     BASE_DIR = Path(__file__).resolve().parent.parent.parent
-    assert temp_fileize(dtrack) == f"{BASE_DIR}/downloads/temp/A - B.mp3"
+    assert temp_fileize(dtrack.track) == f"{BASE_DIR}/downloads/temp/A - B.mp3"
 
 
 def test_splice(dtrack: DownloadedTrack):
     splice(dtrack, start=100000, end=110000)
-    assert os.path.exists(temp_fileize(dtrack))
+    assert os.path.exists(temp_fileize(dtrack.track))
 
 
 def test_negative_splice(dtrack: DownloadedTrack):

@@ -1,5 +1,6 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from toolz import dicttoolz
 import asyncio
@@ -8,7 +9,7 @@ from jsong.member import connect, Member
 from jsong.audio.playlist import Playlist
 from jsong.audio.spotify import get_playlist
 from jsong.audio.downloader import download
-from jsong.audio.audiosplicer import splice
+from jsong.audio.audiosplicer import splice, temp_fileize
 from jsong.game import Game
 import jsong.messages as messages
 
@@ -123,6 +124,11 @@ def splice_track():
 async def wait_until_players_ready():
     while not all(m.isReady for m in JSONG_STATE.members.values()):
         await asyncio.sleep(1)
+
+@app.get("/lobby/track", status_code=200)
+async def get_current_track():
+    track = JSONG_STATE.game.current_track
+    return FileResponse(temp_fileize(track))
 
 
 @app.post("/lobby/ready/{uid}", status_code=200)
