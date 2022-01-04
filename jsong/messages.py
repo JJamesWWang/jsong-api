@@ -1,5 +1,6 @@
 from jsong.member import Member
 from jsong.player import Player
+from jsong.game import Game
 
 
 def context(members: dict[str, Member]):
@@ -38,8 +39,14 @@ def transfer_host(member: Member):
     }
 
 
-def start_game():
-    return {"event": "start_game", "payload": {}}
+def start_game(game: Game):
+    return {
+        "event": "start_game",
+        "payload": {
+            "players": list(map(lambda p: p.asdict(), game.players.values())),
+            "settings": game.settings,
+        },
+    }
 
 
 def next_round():
@@ -51,11 +58,11 @@ def start_round():
 
 
 def correct_guess(player: Player):
-    return {"event": "correct_guess", "payload": _json(player)}
+    return {"event": "correct_guess", "payload": player.asdict()}
 
 
-def end_round():
-    return {"event": "end_round", "payload": {}}
+def end_round(game: Game):
+    return {"event": "end_round", "payload": game.current_track.asdict()}
 
 
 def end_game():
