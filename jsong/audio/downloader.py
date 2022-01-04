@@ -16,6 +16,8 @@ def _generate_options(track: Track) -> dict:
         "format": "bestaudio/best",
         "noplaylist": True,
         "outtmpl": f"{BASE_DIR}/downloads/{querify(track)}.%(ext)s",
+        "external_downloader": "aria2c",
+        "external_downloader_args": ["-s 16", "-x 16", "-k 1M"],
     }
 
 
