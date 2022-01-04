@@ -43,8 +43,8 @@ def start_game(game: Game):
     return {
         "event": "start_game",
         "payload": {
-            "players": list(map(lambda p: p.to_json(), game.players.values())),
-            "settings": game.settings.to_json(),
+            "players": list(map(lambda p: p.to_dict(), game.players.values())),
+            "settings": game.settings.to_dict(),
         },
     }
 
@@ -62,11 +62,11 @@ def start_round():
 
 
 def correct_guess(player: Player):
-    return {"event": "correct_guess", "payload": player.to_json()}
+    return {"event": "correct_guess", "payload": player.to_dict()}
 
 
 def end_round(game: Game):
-    return {"event": "end_round", "payload": game.current_track.to_json()}
+    return {"event": "end_round", "payload": game.current_track.to_dict()}
 
 
 def end_game():
