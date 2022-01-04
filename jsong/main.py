@@ -96,10 +96,14 @@ async def set_playlist(data: PlaylistLink):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@app.post("/lobby/start", status_code=200)
-async def start_game():
+@app.post("/lobby/start/{uid}", status_code=200)
+async def start_game(uid: str):
     if not JSONG_STATE.playlist:
         raise HTTPException(status_code=400, detail="No playlist set")
+    if uid not in JSONG_STATE.members:
+        raise HTTPException(status_code=404, detail="Member not found")
+    if not JSONG_STATE.members[uid].isHost:
+        raise HTTPException(status_code=400, detail="Only host can start game")
     JSONG_STATE.game = Game(JSONG_STATE.members, JSONG_STATE.playlist)
     await broadcast(messages.start_game(JSONG_STATE.game))
     await game_loop()
@@ -151,7 +155,11 @@ async def wait_until_track_done_playing():
         await asyncio.sleep(1)
 
 
-@app.post("/lobby/end", status_code=200)
-async def end_game():
+@app.post("/lobby/end/{uid}", status_code=200)
+async def end_game(uid: str):
+    if uid not in JSONG_STATE.members:
+        raise HTTPException(status_code=404, detail="Player not found")
+    if not JSONG_STATE.members[uid].isHost:
+        raise HTTPException(status_code=400, detail="Only host can end game")
     JSONG_STATE.game.rounds = float("inf")
     await broadcast(messages.end_game())
