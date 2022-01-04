@@ -73,13 +73,14 @@ def test_websocket_claim_host():
 
 
 def test_game_starts_only_if_playlist_set():
-    response = client.post("/lobby/start")
-    assert response.status_code == 400
+    with client.websocket_connect("/ws/hey") as websocket1:
+        response = client.post("/lobby/start/hey")
+        assert response.status_code == 400
 
 
 def test_set_playlist():
     response = client.put(
-        "/lobby/playlist/",
+        "/lobby/playlist",
         json={
             "link": "https://open.spotify.com/playlist/7Ia4x1WOfXZEwx8LvpleFI?si=1e046cac7db04acd"
         },
@@ -89,6 +90,6 @@ def test_set_playlist():
 
 def test_set_invalid_playlist():
     response = client.put(
-        "/lobby/playlist/", json={"link": "https://youtube.com/watch?v=dQw4w9WgXcQ"}
+        "/lobby/playlist", json={"link": "https://youtube.com/watch?v=dQw4w9WgXcQ"}
     )
     assert response.status_code == 400

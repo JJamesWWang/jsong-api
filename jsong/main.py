@@ -88,7 +88,7 @@ class PlaylistLink(BaseModel):
     link: str
 
 
-@app.put("/lobby/playlist/", status_code=200)
+@app.put("/lobby/playlist", status_code=200)
 async def set_playlist(data: PlaylistLink):
     try:
         JSONG_STATE.playlist = get_playlist(data.link)
@@ -104,7 +104,10 @@ async def start_game(uid: str):
         raise HTTPException(status_code=404, detail="Member not found")
     if not JSONG_STATE.members[uid].isHost:
         raise HTTPException(status_code=400, detail="Only host can start game")
-    JSONG_STATE.game = Game(JSONG_STATE.members, JSONG_STATE.playlist)
+    JSONG_STATE.game = Game(
+        ((m.uid, m.username) for m in JSONG_STATE.members.values()),
+        JSONG_STATE.playlist,
+    )
     await broadcast(messages.start_game(JSONG_STATE.game))
     await game_loop()
     await broadcast(messages.end_game())
@@ -114,7 +117,7 @@ async def game_loop():
     while JSONG_STATE.game.is_active:
         JSONG_STATE.game.advance_round()
         await broadcast(messages.downloading_track())
-        splice_track()
+        await asyncio.gather(asyncio.to_thread(splice_track))
         await broadcast(messages.next_round())
         await wait_until_players_ready()
         await broadcast(messages.start_round())
@@ -130,7 +133,7 @@ def splice_track():
 
 
 async def wait_until_players_ready():
-    while not all(p.isReady for p in JSONG_STATE.game.players.values()):
+    while not all(p.is_ready for p in JSONG_STATE.game.players.values()):
         await asyncio.sleep(1)
 
 
