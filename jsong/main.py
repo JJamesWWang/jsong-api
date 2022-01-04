@@ -43,7 +43,7 @@ JSONG_STATE: GlobalState = GlobalState()
 @app.websocket("/ws/{username}")
 async def get_websocket(websocket: WebSocket, username: str):
     if JSONG_STATE.game.is_active:
-        raise HTTPException(status_code=400, detail="Game is already in progress")
+        raise HTTPException(status_code=403, detail="Game is already in progress")
     members = JSONG_STATE.members
     member = await connect(members, websocket, username)
     await member.websocket.send_json(messages.context(members))
@@ -117,7 +117,10 @@ async def game_loop():
     while JSONG_STATE.game.is_active:
         JSONG_STATE.game.advance_round()
         await broadcast(messages.downloading_track())
-        await asyncio.gather(asyncio.to_thread(splice_track))
+        downloaded = await asyncio.gather(asyncio.to_thread(splice_track))
+        if not downloaded:
+            JSONG_STATE.game.retract_round()
+            continue
         await broadcast(messages.next_round())
         await wait_until_players_ready()
         await broadcast(messages.start_round())
@@ -127,9 +130,13 @@ async def game_loop():
 
 def splice_track():
     track = JSONG_STATE.game.current_track
-    dtrack = download(track)
-    start = random.randint(0, track.duration - JSONG_STATE.game.play_length)
-    splice(dtrack, start, start + JSONG_STATE.game.play_length * 1000)
+    try:
+        dtrack = download(track)
+        start = random.randint(0, track.duration - JSONG_STATE.game.play_length)
+        splice(dtrack, start, start + JSONG_STATE.game.play_length * 1000)
+        return True
+    except Exception:
+        return False
 
 
 async def wait_until_players_ready():
