@@ -1,8 +1,11 @@
 FROM python:3.9.9-buster
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONNUBUFFERED=1
+
+RUN mkdir /code
 WORKDIR /code
-COPY requirements.txt /code/
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
-RUN apt-get update && apt-get install -y ffmpeg libavcodec-extra
 COPY . /code/
+
+RUN pip3 install --no-cache-dir --upgrade -r /code/requirements.txt
+RUN apt-get update && apt-get install -y ffmpeg libavcodec-extra
+RUN apt install aria2 -y
