@@ -133,7 +133,9 @@ def splice_track():
 
 
 async def wait_until_players_ready():
-    while not all(p.is_ready for p in JSONG_STATE.game.players.values()):
+    while JSONG_STATE.game.is_active and not all(
+        p.is_ready for p in JSONG_STATE.game.players.values()
+    ):
         await asyncio.sleep(1)
 
 
