@@ -22,7 +22,7 @@ app.add_middleware(
 class GlobalState:  # my greatest mistake, but it works
     members: dict[str, Member] = {}
     playlist: Playlist = None
-    game: Game = None
+    game: Game = Game.empty()
 
     @classmethod
     def with_members(cls, state, members):
@@ -51,7 +51,12 @@ async def listen_for_messages(member: Member):
     try:
         while True:
             content = await member.websocket.receive_json()
-            await broadcast(messages.chat(member, content))
+            if JSONG_STATE.game.is_active and JSONG_STATE.game.guess(
+                member.uid, content
+            ):
+                await broadcast(messages.correct_guess(member))
+            else:
+                await broadcast(messages.chat(member, content))
     except WebSocketDisconnect:
         JSONG_STATE.members.pop(member.uid, None)
         await broadcast(messages.disconnected(member))

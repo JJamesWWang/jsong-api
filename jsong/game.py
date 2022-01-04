@@ -36,9 +36,13 @@ class Game:
         self.rounds = 0
         self.current_track: Track = None
 
+    @classmethod
+    def empty(cls):
+        return cls([], Playlist.empty())
+
     @property
-    def is_over(self):
-        return self.playlist == [] or self.rounds >= self.settings.maxRounds
+    def is_active(self):
+        return self.playlist != [] and self.rounds < self.settings.maxRounds
 
     def guess(self, uid: str, guess: str) -> bool:
         if self._should_give_points(uid, guess):
@@ -47,14 +51,13 @@ class Game:
         return False
 
     def _should_give_points(self, uid: str, guess: str):
-        print(self.current_track.name, guess)
         return (
             self.current_track.name.lower() == guess.lower()
             and self.players[uid].is_correct is False
         )
 
     def advance_round(self):
-        if not self.is_over:
+        if self.is_active:
             self.rounds += 1
             self.current_track = self.playlist.pop(
                 random.randint(0, len(self.playlist) - 1)

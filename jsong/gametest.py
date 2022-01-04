@@ -74,7 +74,7 @@ def test_init_game_state(playlist: Playlist, game: Game):
     assert game.settings == GameSettings(playlistName=playlist.name, maxRounds=2)
     assert game.rounds == 0
     assert game.current_track is None
-    assert game.is_over is False
+    assert game.is_active is True
 
 
 def test_guess_correct(game: Game, player: Player, playlist: Playlist):
@@ -108,7 +108,7 @@ def test_advance_round(game: Game):
     assert game.rounds == 1
     assert len(game.playlist) == 2
     assert game.current_track is not None
-    assert game.is_over is False
+    assert game.is_active is True
 
 
 def test_game_over_by_rounds(game: Game):
@@ -117,7 +117,7 @@ def test_game_over_by_rounds(game: Game):
     assert game.rounds == 2
     assert len(game.playlist) == 1
     assert game.current_track is not None
-    assert game.is_over is True
+    assert game.is_active is False
 
 
 @pytest.fixture
@@ -133,4 +133,4 @@ def test_game_over_by_playlist(game2: Game):
     assert game2.rounds == 3
     assert len(game2.playlist) == 0
     assert game2.current_track is not None
-    assert game2.is_over is True
+    assert game2.is_active is False
