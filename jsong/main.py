@@ -142,8 +142,8 @@ def splice_track():
 
 
 async def wait_until_players_ready():
-    while JSONG_STATE.game.is_active and not all(
-        p.is_ready for p in JSONG_STATE.game.players.values()
+    while JSONG_STATE.game.is_active and any(
+        not p.is_ready for p in JSONG_STATE.game.players.values()
     ):
         await asyncio.sleep(1)
 
@@ -159,8 +159,8 @@ async def set_ready(uid: str):
     if uid not in JSONG_STATE.game.players:
         raise HTTPException(status_code=404, detail="Player not found")
     player = JSONG_STATE.game.players[uid]
-    JSONG_STATE.members = dicttoolz.assoc(
-        JSONG_STATE.members, uid, replace(player, is_ready=True)
+    JSONG_STATE.game.players = dicttoolz.assoc(
+        JSONG_STATE.game.players, uid, replace(player, is_ready=True)
     )
 
 
