@@ -98,8 +98,9 @@ def test_advance_round(game: Game):
 def test_game_over_by_rounds(game: Game):
     game.advance_round()
     game.advance_round()
-    assert game.rounds == 2
-    assert len(game.playlist) == 1
+    game.advance_round()
+    assert game.rounds == 3
+    assert len(game.playlist) == 0
     assert game.current_track is not None
     assert game.is_active is False
 

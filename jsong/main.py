@@ -116,8 +116,8 @@ async def start_game(uid: str):
 
 
 async def game_loop():
+    JSONG_STATE.game.advance_round()
     while JSONG_STATE.game.is_active:
-        JSONG_STATE.game.advance_round()
         await broadcast(messages.downloading_track())
         downloaded = await asyncio.gather(asyncio.to_thread(splice_track))
         if not downloaded:
@@ -128,6 +128,7 @@ async def game_loop():
         await broadcast(messages.start_round())
         await wait_until_track_done_playing()
         await broadcast(messages.end_round(JSONG_STATE.game))
+        JSONG_STATE.game.advance_round()
 
 
 def splice_track():

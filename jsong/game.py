@@ -34,7 +34,7 @@ class Game:
 
     @property
     def is_active(self):
-        return self.playlist != [] and self.rounds < self.settings.max_rounds
+        return self.playlist != [] and self.rounds <= self.settings.max_rounds
 
     def guess(self, uid: str, guess: str) -> bool:
         if self._should_give_points(uid, guess):
