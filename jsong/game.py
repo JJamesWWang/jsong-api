@@ -60,9 +60,6 @@ class Game:
                 for uid, player in self.players.items()
             }
 
-    def retract_round(self):
-        self.rounds -= 1
-
     @property
     def play_length(self):
         return self.settings.play_length

@@ -121,7 +121,6 @@ async def game_loop():
         await broadcast(messages.downloading_track())
         downloaded = await asyncio.gather(asyncio.to_thread(splice_track))
         if not downloaded:
-            JSONG_STATE.game.retract_round()
             continue
         await broadcast(messages.next_round())
         await wait_until_players_ready()
