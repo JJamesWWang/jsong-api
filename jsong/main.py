@@ -149,7 +149,7 @@ async def wait_until_players_ready():
 
 
 @app.get("/lobby/track", status_code=200)
-async def get_current_track():
+async def get_current_track(randomizer: int):
     track = JSONG_STATE.game.current_track
     return FileResponse(temp_fileize(track))
 
