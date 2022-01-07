@@ -159,6 +159,16 @@ async def wait_until_players_ready():
         count += 1
 
 
+@app.post("/lobby/ready/{uid}", status_code=200)
+async def set_ready(uid: str):
+    if uid not in JSONG_STATE.game.players:
+        raise HTTPException(status_code=404, detail="Player not found")
+    player = JSONG_STATE.game.players[uid]
+    JSONG_STATE.game.players = dicttoolz.assoc(
+        JSONG_STATE.game.players, uid, replace(player, is_ready=True)
+    )
+
+
 @app.get("/lobby/track", status_code=200)
 async def get_current_track():
     track = JSONG_STATE.game.current_track
@@ -172,26 +182,17 @@ async def get_current_track():
     raise HTTPException(status_code=500, detail="Failed to get track")
 
 
-@app.post("/lobby/ready/{uid}", status_code=200)
-async def set_ready(uid: str):
-    if uid not in JSONG_STATE.game.players:
-        raise HTTPException(status_code=404, detail="Player not found")
-    player = JSONG_STATE.game.players[uid]
-    JSONG_STATE.game.players = dicttoolz.assoc(
-        JSONG_STATE.game.players, uid, replace(player, is_ready=True)
-    )
+async def end_round():
+    await wait_until_track_done_playing()
+    await broadcast(messages.end_round(JSONG_STATE.game))
+    JSONG_STATE.game.advance_round()
+    if not JSONG_STATE.game.is_last_round:
+        await broadcast(messages.downloading_track())
 
 
 async def wait_until_track_done_playing():
     for _ in range(JSONG_STATE.game.play_length):
         await asyncio.sleep(1)
-
-
-async def end_round():
-    await wait_until_track_done_playing()
-    await broadcast(messages.end_round(JSONG_STATE.game))
-    JSONG_STATE.game.advance_round()
-    await broadcast(messages.downloading_track())
 
 
 @app.post("/lobby/end/{uid}", status_code=200)
