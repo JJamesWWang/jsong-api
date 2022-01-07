@@ -41,7 +41,7 @@ def playlist():
 def game(members: Iterable[tuple[str, str]], playlist: Playlist):
     return Game(
         members,
-        list(reversed(playlist)),
+        Playlist(name=playlist.name, tracks=list(reversed(playlist.tracks))),
         settings=GameSettings(playlist_name=playlist.name, max_rounds=2),
     )
 
@@ -50,7 +50,7 @@ def test_init_game_state(
     player: Player, player2: Player, playlist: Playlist, game: Game
 ):
     assert game.players == {"1": player, "2": player2}
-    assert game.playlist == playlist.tracks
+    assert game.playlist == list(reversed(playlist.tracks))
     assert game.settings == GameSettings(playlist_name=playlist.name, max_rounds=2)
     assert game.rounds == 0
     assert game.current_track is None
