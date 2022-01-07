@@ -7,7 +7,7 @@ import asyncio
 import random
 from dataclasses import replace
 from jsong.member import connect, Member
-from jsong.audio.playlist import Playlist
+from jsong.audio.playlist import Playlist, Track
 from jsong.audio.spotify import get_playlist
 from jsong.audio.downloader import download
 from jsong.audio.audiosplicer import splice, temp_fileize
@@ -119,19 +119,27 @@ async def game_loop():
     JSONG_STATE.game.advance_round()
     while JSONG_STATE.game.is_active:
         await broadcast(messages.downloading_track())
-        downloaded = await asyncio.gather(asyncio.to_thread(splice_track))
+        downloaded = await download_track(JSONG_STATE.game.current_track)
         if not downloaded:
+            JSONG_STATE.game.advance_track()
             continue
         await broadcast(messages.next_round())
         await wait_until_players_ready()
         await broadcast(messages.start_round())
-        await wait_until_track_done_playing()
+        await asyncio.gather(
+            download_track(JSONG_STATE.game.next_track),
+            wait_until_track_done_playing(),
+        )
         await broadcast(messages.end_round(JSONG_STATE.game))
         JSONG_STATE.game.advance_round()
 
 
-def splice_track():
-    track = JSONG_STATE.game.current_track
+async def download_track(track: Track):
+    if track:
+        return await asyncio.gather(asyncio.to_thread(splice_track, track))
+
+
+def splice_track(track: Track):
     try:
         dtrack = download(track)
         start = random.randint(0, track.duration - JSONG_STATE.game.play_length)
