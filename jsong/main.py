@@ -91,11 +91,8 @@ class PlaylistLink(BaseModel):
 
 @app.put("/lobby/playlist", status_code=200)
 async def set_playlist(data: PlaylistLink):
-    try:
-        JSONG_STATE.playlist = get_playlist(data.link)
-        random.shuffle(JSONG_STATE.playlist)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    JSONG_STATE.playlist = get_playlist(data.link)
+    random.shuffle(JSONG_STATE.playlist.tracks)
 
 
 @app.post("/lobby/start/{uid}", status_code=200)
