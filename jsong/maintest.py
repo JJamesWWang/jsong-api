@@ -74,6 +74,9 @@ def test_websocket_claim_host():
 
 def test_game_starts_only_if_playlist_set():
     with client.websocket_connect("/ws/hey") as websocket1:
+        context = websocket1.receive_json()
+        member = websocket1.receive_json()["payload"]
+        client.put(f"/lobby/host/{member['uid']}")
         response = client.post("/lobby/start/hey")
         assert response.status_code == 400
 
