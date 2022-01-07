@@ -27,12 +27,17 @@ def get_playlist(playlist_link: str) -> Playlist:
         f"https://api.spotify.com/v1/playlists/{playlist_id}",
         headers={"Authorization": f"Bearer {_get_access_token()}"},
     ).json()
-    tracks = [
-        Track(
-            name=track["track"]["name"],
-            artists=[artist["name"] for artist in track["track"]["artists"]],
-            duration=track["track"]["duration_ms"],
-        )
-        for track in playlist_data["tracks"]["items"]
-    ]
+
+    tracks = []
+    for track in playlist_data["tracks"]["items"]:
+        try:
+            tracks.append(
+                Track(
+                    name=track["track"]["name"],
+                    artists=[artist["name"] for artist in track["track"]["artists"]],
+                    duration=track["track"]["duration_ms"],
+                )
+            )
+        except KeyError:
+            pass    # invalid track okay, just skip it
     return Playlist(name=playlist_data["name"], tracks=tracks)
