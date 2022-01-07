@@ -94,6 +94,7 @@ class PlaylistLink(BaseModel):
 async def set_playlist(data: PlaylistLink):
     try:
         JSONG_STATE.playlist = get_playlist(data.link)
+        random.shuffle(JSONG_STATE.playlist)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
