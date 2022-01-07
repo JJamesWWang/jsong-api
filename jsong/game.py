@@ -59,6 +59,13 @@ class Game:
                 for uid, player in self.players.items()
             }
 
+    def advance_track(self):
+        self.current_track = self.playlist.pop() if self.playlist else None
+
     @property
     def play_length(self):
         return self.settings.play_length
+
+    @property
+    def next_track(self):
+        return self.playlist[-1] if self.playlist else None
