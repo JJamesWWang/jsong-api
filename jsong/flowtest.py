@@ -57,10 +57,23 @@ def receive_start_round(ws1: WebSocket, ws2: WebSocket):
     ws2.receive_json()
 
 
-def receive_correct_guess(ws1: WebSocket, ws2: WebSocket):
-    player: Player = ws1.receive_json()["payload"]
-    ws2.receive_json()  # should be same
-    return player
+def receive_message(ws1: WebSocket, ws2: WebSocket):
+    message = ws1.receive_json()
+    ws2.receive_json()
+    if message["event"] == "chat":
+        return receive_chat(message)
+    elif message["event"] == "correct_guess":
+        return receive_correct_guess(message)
+
+
+def receive_chat(message):
+    member = message["payload"]["member"]
+    chat = message["payload"]["content"]
+    return member, chat
+
+
+def receive_correct_guess(message):
+    return message["payload"]
 
 
 def receive_end_round(ws1: WebSocket, ws2: WebSocket):
@@ -94,7 +107,6 @@ def start_game(host_uid: str):
     return asyncio.to_thread(client.post, f"/lobby/start/{host_uid}")
 
 
-
 async def play_game(ws1: WebSocket, ws2: WebSocket, member1: dict, member2: dict):
     state = receive_start_game(ws1, ws2)
     assert len(state["players"]) == 2
@@ -102,23 +114,79 @@ async def play_game(ws1: WebSocket, ws2: WebSocket, member1: dict, member2: dict
 
     tracks = ["GLASSY", "Electric Shock", "D-D-DANCE"]
 
-    for _ in range(3):
-        receive_downloading_track(ws1, ws2)
-        receive_next_round(ws1, ws2)
-        send_ready(member1, member2)
-        receive_start_round(ws1, ws2)
-        track = receive_end_round(ws1, ws2)
-        assert track["name"] in tracks
+    round1(ws1, ws2, member1, member2, tracks)
+    round2(ws1, ws2, member1, member2, tracks)
+    round3(ws1, ws2, member1, member2, tracks)
+
     receive_end_game(ws1, ws2)
 
-@pytest.mark.skip
+
+def round1(ws1, ws2, member1, member2, tracks):
+    receive_downloading_track(ws1, ws2)
+    receive_next_round(ws1, ws2)
+    send_ready(member1, member2)
+    receive_start_round(ws1, ws2)
+    track = receive_end_round(ws1, ws2)
+    assert track["name"] in tracks
+
+
+def round2(ws1, ws2, member1, member2, tracks):
+    receive_downloading_track(ws1, ws2)
+    receive_next_round(ws1, ws2)
+    send_ready(member1, member2)
+    receive_start_round(ws1, ws2)
+    ws1.send_json("glassy")
+    ws1.send_json("electric shock")
+    ws1.send_json("d-d-dance")
+    count, member = find_correct_and_count(ws1, ws2)
+    assert count == 1
+    assert member["uid"] == member1["uid"]
+    track = receive_end_round(ws1, ws2)
+    assert track["name"] in tracks
+
+
+def round3(ws1, ws2, member1, member2, tracks):
+    receive_downloading_track(ws1, ws2)
+    receive_next_round(ws1, ws2)
+    send_ready(member1, member2)
+    receive_start_round(ws1, ws2)
+    ws1.send_json("glassy")
+    ws1.send_json("electric shock")
+    ws1.send_json("d-d-dance")
+    count, member = find_correct_and_count(ws1, ws2)
+    assert count == 1
+    assert member["uid"] == member1["uid"]
+
+    ws2.send_json("glassy")
+    ws2.send_json("electric shock")
+    ws2.send_json("d-d-dance")
+    count, member = find_correct_and_count(ws1, ws2)
+    assert count == 1
+    assert member["uid"] == member2["uid"]
+
+    track = receive_end_round(ws1, ws2)
+    assert track["name"] in tracks
+
+
+def find_correct_and_count(ws1: WebSocket, ws2: WebSocket):
+    res1 = receive_message(ws1, ws2)
+    res2 = receive_message(ws1, ws2)
+    res3 = receive_message(ws1, ws2)
+    member = None
+    count = 0
+    for r in [res1, res2, res3]:
+        if isinstance(r, dict):
+            count += 1
+            member = r
+    return count, member
+
+
 @pytest.mark.asyncio
 async def test_game_flow():
     with client.websocket_connect("/ws/1") as ws1:
         with client.websocket_connect("/ws/2") as ws2:
-            GameSettings.play_length = 1
+            GameSettings.play_length = 0
             member1, member2 = await set_up_game(ws1, ws2)
             await asyncio.gather(
-                start_game(member1["uid"]), 
-                play_game(ws1, ws2, member1, member2)
+                start_game(member1["uid"]), play_game(ws1, ws2, member1, member2)
             )
