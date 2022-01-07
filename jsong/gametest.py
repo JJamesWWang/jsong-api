@@ -115,9 +115,9 @@ def game2(members: Iterable[tuple[str, str]], playlist: Playlist):
 
 
 def test_game_over_by_playlist(game2: Game):
-    for _ in range(3):
+    for _ in range(4):
         game2.advance_round()
-    assert game2.rounds == 3
+    assert game2.rounds == 4
     assert len(game2.playlist) == 0
-    assert game2.current_track is not None
+    assert game2.current_track is None
     assert game2.is_active is False

@@ -34,7 +34,9 @@ class Game:
 
     @property
     def is_active(self):
-        return self.playlist != [] and self.rounds <= self.settings.max_rounds
+        return (
+            self.playlist != [] or self.current_track is not None
+        ) and self.rounds <= self.settings.max_rounds
 
     def guess(self, uid: str, guess: str) -> bool:
         if self._should_give_points(uid, guess):
@@ -54,7 +56,7 @@ class Game:
             self.rounds += 1
             self.current_track = self.playlist.pop(
                 random.randint(0, len(self.playlist) - 1)
-            )
+            ) if self.playlist else None
             self.players = {
                 uid: replace(player, is_correct=False, is_ready=False)
                 for uid, player in self.players.items()
