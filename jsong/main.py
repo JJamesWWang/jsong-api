@@ -116,8 +116,8 @@ async def start_game(uid: str):
 
 async def game_loop():
     JSONG_STATE.game.advance_round()
+    await broadcast(messages.downloading_track())
     while JSONG_STATE.game.is_active:
-        await broadcast(messages.downloading_track())
         downloaded = await download_track(JSONG_STATE.game.current_track)
         if not downloaded:
             JSONG_STATE.game.advance_track()
