@@ -11,7 +11,7 @@ from dataclasses import replace
 class GameSettings:
     playlist_name: str
     max_rounds: int = 10
-    play_length: int = 10
+    play_length: int = 20
 
 
 class Game:
