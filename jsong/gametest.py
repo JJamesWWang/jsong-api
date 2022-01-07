@@ -3,8 +3,6 @@ from jsong.audio.playlist import Playlist, Track
 from jsong.game import Game, GameSettings
 from jsong.player import Player
 import pytest
-import random
-import copy
 
 
 @pytest.fixture
@@ -41,10 +39,9 @@ def playlist():
 
 @pytest.fixture
 def game(members: Iterable[tuple[str, str]], playlist: Playlist):
-    random.seed(1)  # picks the first one all three times
     return Game(
         members,
-        copy.deepcopy(playlist),
+        list(reversed(playlist)),
         settings=GameSettings(playlist_name=playlist.name, max_rounds=2),
     )
 

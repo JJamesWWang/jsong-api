@@ -1,7 +1,6 @@
 from typing import Iterable
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json, LetterCase
-import random
 from jsong.audio.playlist import Track, Playlist
 from jsong.player import Player
 from dataclasses import replace
@@ -54,9 +53,7 @@ class Game:
     def advance_round(self):
         if self.is_active:
             self.rounds += 1
-            self.current_track = self.playlist.pop(
-                random.randint(0, len(self.playlist) - 1)
-            ) if self.playlist else None
+            self.current_track = self.playlist.pop() if self.playlist else None
             self.players = {
                 uid: replace(player, is_correct=False, is_ready=False)
                 for uid, player in self.players.items()
