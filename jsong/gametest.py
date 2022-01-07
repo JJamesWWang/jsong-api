@@ -55,7 +55,7 @@ def test_init_game_state(
     assert game.rounds == 0
     assert game.current_track is None
     assert game.is_active is True
-    assert game.play_length == 10
+    assert game.play_length == 20
 
 
 def test_guess_correct(game: Game, player: Player, playlist: Playlist):
@@ -111,6 +111,12 @@ def test_next_track(game: Game, playlist: Playlist):
     assert game.next_track == playlist.tracks[2]
     game.advance_track()
     assert game.next_track is None
+
+def test_is_last_round(game: Game):
+    game.advance_round()
+    game.advance_round()
+    game.advance_round()
+    assert game.is_last_round
 
 
 def test_game_over_by_rounds(game: Game):

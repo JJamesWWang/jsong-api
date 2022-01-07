@@ -69,3 +69,7 @@ class Game:
     @property
     def next_track(self):
         return self.playlist[-1] if self.playlist else None
+
+    @property
+    def is_last_round(self):
+        return self.rounds == self.settings.max_rounds or self.playlist == []
