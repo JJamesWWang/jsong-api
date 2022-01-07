@@ -112,6 +112,7 @@ def test_next_track(game: Game, playlist: Playlist):
     game.advance_track()
     assert game.next_track is None
 
+
 def test_is_last_round(game: Game):
     game.advance_round()
     game.advance_round()

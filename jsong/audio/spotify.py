@@ -39,5 +39,5 @@ def get_playlist(playlist_link: str) -> Playlist:
                 )
             )
         except KeyError:
-            pass    # invalid track okay, just skip it
+            pass  # invalid track okay, just skip it
     return Playlist(name=playlist_data["name"], tracks=tracks)
