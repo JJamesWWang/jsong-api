@@ -37,6 +37,8 @@ class GlobalState:  # my greatest mistake, but it works
 
 
 JSONG_STATE: GlobalState = GlobalState()
+WAIT_FOR_READY_TIMEOUT = 3
+WAIT_FOR_FILE_TIMEOUT = 3
 
 
 @app.websocket("/ws/{username}")
@@ -149,17 +151,21 @@ def splice_track(track: Track):
 
 
 async def wait_until_players_ready():
-    while JSONG_STATE.game.is_active and any(
-        not p.is_ready for p in JSONG_STATE.game.players.values()
+    count = 0
+    while (
+        JSONG_STATE.game.is_active
+        and any(not p.is_ready for p in JSONG_STATE.game.players.values())
+        and count < WAIT_FOR_READY_TIMEOUT
     ):
         await asyncio.sleep(1)
+        count += 1
 
 
 @app.get("/lobby/track", status_code=200)
 async def get_current_track():
     track = JSONG_STATE.game.current_track
     count = 0
-    while count < 3:
+    while count < WAIT_FOR_FILE_TIMEOUT:
         try:
             return FileResponse(temp_fileize(track))
         except Exception:
