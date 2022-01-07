@@ -124,7 +124,9 @@ async def game_loop():
         await wait_until_players_ready()
         await broadcast(messages.start_round())
         await asyncio.gather(
-            download_track(JSONG_STATE.game.next_track),
+            download_track(
+                None if JSONG_STATE.game.is_last_round else JSONG_STATE.game.next_track
+            ),
             wait_until_track_done_playing(),
         )
         await broadcast(messages.end_round(JSONG_STATE.game))
@@ -160,7 +162,7 @@ async def get_current_track():
     while count < 3:
         try:
             return FileResponse(temp_fileize(track))
-        except FileNotFoundError:
+        except Exception:
             await asyncio.sleep(1)
             count += 1
     raise HTTPException(status_code=500, detail="Failed to get track")
