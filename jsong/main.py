@@ -156,7 +156,14 @@ async def wait_until_players_ready():
 @app.get("/lobby/track", status_code=200)
 async def get_current_track():
     track = JSONG_STATE.game.current_track
-    return FileResponse(temp_fileize(track))
+    count = 0
+    while count < 3:
+        try:
+            return FileResponse(temp_fileize(track))
+        except FileNotFoundError:
+            await asyncio.sleep(1)
+            count += 1
+    raise HTTPException(status_code=500, detail="Failed to get track")
 
 
 @app.post("/lobby/ready/{uid}", status_code=200)
