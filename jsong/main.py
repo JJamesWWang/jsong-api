@@ -12,7 +12,6 @@ from jsong.audio.spotify import get_playlist
 from jsong.audio.downloader import download
 from jsong.audio.audiosplicer import splice, temp_fileize
 from jsong.game import Game
-from jsong.player import Player
 import jsong.messages as messages
 
 app = FastAPI()
