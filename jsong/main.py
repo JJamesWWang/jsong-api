@@ -116,8 +116,8 @@ async def start_game(uid: str):
 
 async def game_loop():
     JSONG_STATE.game.advance_round()
+    await broadcast(messages.downloading_track())
     while JSONG_STATE.game.is_active:
-        await broadcast(messages.downloading_track())
         downloaded = await download_track(JSONG_STATE.game.current_track)
         if not downloaded:
             JSONG_STATE.game.advance_track()
@@ -129,10 +129,8 @@ async def game_loop():
             download_track(
                 None if JSONG_STATE.game.is_last_round else JSONG_STATE.game.next_track
             ),
-            wait_until_track_done_playing(),
+            end_round(),
         )
-        await broadcast(messages.end_round(JSONG_STATE.game))
-        JSONG_STATE.game.advance_round()
 
 
 async def download_track(track: Track):
@@ -187,6 +185,13 @@ async def set_ready(uid: str):
 async def wait_until_track_done_playing():
     for _ in range(JSONG_STATE.game.play_length):
         await asyncio.sleep(1)
+
+
+async def end_round():
+    await wait_until_track_done_playing()
+    await broadcast(messages.end_round(JSONG_STATE.game))
+    JSONG_STATE.game.advance_round()
+    await broadcast(messages.downloading_track())
 
 
 @app.post("/lobby/end/{uid}", status_code=200)
