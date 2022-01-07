@@ -91,6 +91,7 @@ def test_advance_round(game: Game):
     assert game.current_track is not None
     assert game.is_active is True
 
+
 def test_advance_track(game: Game, playlist: Playlist):
     game.advance_track()
     assert game.current_track == playlist.tracks[0]
@@ -101,6 +102,7 @@ def test_advance_track(game: Game, playlist: Playlist):
     game.advance_track()
     assert game.current_track is None
 
+
 def test_next_track(game: Game, playlist: Playlist):
     assert game.next_track == playlist.tracks[0]
     game.advance_track()
@@ -109,6 +111,7 @@ def test_next_track(game: Game, playlist: Playlist):
     assert game.next_track == playlist.tracks[2]
     game.advance_track()
     assert game.next_track is None
+
 
 def test_game_over_by_rounds(game: Game):
     game.advance_round()

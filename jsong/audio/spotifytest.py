@@ -28,4 +28,3 @@ def test_playlist_tracks_correct(playlist):
         assert track.name in ["Electric Shock", "D-D-DANCE", "GLASSY"]
         assert track.artists in [["f(x)"], ["IZ*ONE"], ["JO YURI"]]
         assert track.duration in [196946, 205066, 189933]
-
