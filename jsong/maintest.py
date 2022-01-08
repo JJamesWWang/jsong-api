@@ -96,4 +96,4 @@ def test_set_invalid_playlist():
     response = client.put(
         "/lobby/playlist", json={"link": "https://youtube.com/watch?v=dQw4w9WgXcQ"}
     )
-    assert response.status_code == 400
+    assert response.status_code == 404
