@@ -38,7 +38,6 @@ class GlobalState:  # my greatest mistake, but it works
 
 JSONG_STATE: GlobalState = GlobalState()
 WAIT_FOR_READY_TIMEOUT = 3
-POST_START_ROUND_DELAY = 3
 WAIT_FOR_FILE_TIMEOUT = 3
 
 
@@ -196,7 +195,7 @@ async def end_round():
 
 
 async def wait_post_start_round():
-    for _ in range(POST_START_ROUND_DELAY):
+    for _ in range(JSONG_STATE.game.start_round_delay):
         await asyncio.sleep(1)
 
 

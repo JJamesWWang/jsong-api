@@ -56,6 +56,7 @@ def test_init_game_state(
     assert game.current_track is None
     assert game.is_active is True
     assert game.play_length == 20
+    assert game.start_round_delay == 3
 
 
 def test_guess_correct(game: Game, player: Player, playlist: Playlist):

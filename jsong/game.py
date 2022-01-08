@@ -12,6 +12,7 @@ class GameSettings:
     playlist_name: str
     max_rounds: int = 10
     play_length: int = 20
+    start_round_delay: int = 3
 
 
 class Game:
@@ -65,6 +66,10 @@ class Game:
     @property
     def play_length(self):
         return self.settings.play_length
+
+    @property
+    def start_round_delay(self):
+        return self.settings.start_round_delay
 
     @property
     def next_track(self):
