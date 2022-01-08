@@ -37,8 +37,8 @@ class GlobalState:  # my greatest mistake, but it works
 
 
 JSONG_STATE: GlobalState = GlobalState()
-WAIT_FOR_READY_TIMEOUT = 3
-WAIT_FOR_FILE_TIMEOUT = 3
+WAIT_FOR_READY_TIMEOUT = 5
+WAIT_FOR_FILE_TIMEOUT = 10
 
 
 @app.websocket("/ws/{username}")
