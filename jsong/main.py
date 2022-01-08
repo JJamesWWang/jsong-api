@@ -14,9 +14,9 @@ from jsong.audio.audiosplicer import splice, temp_fileize
 from jsong.game import Game
 import jsong.messages as messages
 
+DEBUG = False
 app = FastAPI()
-
-origins = ["http://localhost:3000"]
+origins = ["http://localhost:3000"] if DEBUG else ["https://jjameswwang.github.io"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
