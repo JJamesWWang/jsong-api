@@ -38,6 +38,7 @@ class GlobalState:  # my greatest mistake, but it works
 
 JSONG_STATE: GlobalState = GlobalState()
 WAIT_FOR_READY_TIMEOUT = 3
+POST_START_ROUND_DELAY = 3
 WAIT_FOR_FILE_TIMEOUT = 3
 
 
@@ -183,11 +184,17 @@ async def get_current_track():
 
 
 async def end_round():
+    await wait_post_start_round()
     await wait_until_track_done_playing()
     await broadcast(messages.end_round(JSONG_STATE.game))
     JSONG_STATE.game.advance_round()
     if not JSONG_STATE.game.is_last_round:
         await broadcast(messages.downloading_track())
+
+
+async def wait_post_start_round():
+    for _ in range(POST_START_ROUND_DELAY):
+        await asyncio.sleep(1)
 
 
 async def wait_until_track_done_playing():
