@@ -186,6 +186,7 @@ async def test_game_flow():
     with client.websocket_connect("/ws/1") as ws1:
         with client.websocket_connect("/ws/2") as ws2:
             GameSettings.play_length = 0
+            GameSettings.start_round_delay = 0
             member1, member2 = await set_up_game(ws1, ws2)
             await asyncio.gather(
                 start_game(member1["uid"]), play_game(ws1, ws2, member1, member2)
