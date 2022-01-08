@@ -1,7 +1,7 @@
 import pytest
 from playlist import Track
 from downloader import download, DownloadedTrack
-from audiosplicer import temp_fileize, splice
+from audiosplicer import temp_file, splice
 from pathlib import Path
 import os
 
@@ -16,14 +16,14 @@ def dtrack(track: Track):
     return download(track)
 
 
-def test_temp_fileize(dtrack: DownloadedTrack):
+def test_temp_file(dtrack: DownloadedTrack):
     BASE_DIR = Path(__file__).resolve().parent.parent.parent
-    assert temp_fileize(dtrack.track) == f"{BASE_DIR}/downloads/temp/A - B.mp3"
+    assert temp_file() == f"{BASE_DIR}/downloads/temp/track.mp3"
 
 
 def test_splice(dtrack: DownloadedTrack):
     splice(dtrack, start=100000, end=110000)
-    assert os.path.exists(temp_fileize(dtrack.track))
+    assert os.path.exists(temp_file())
 
 
 def test_negative_splice(dtrack: DownloadedTrack):
