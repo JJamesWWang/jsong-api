@@ -190,7 +190,7 @@ async def end_round():
     await wait_until_track_done_playing()
     await broadcast(messages.end_round(JSONG_STATE.game))
     JSONG_STATE.game.advance_round()
-    if not JSONG_STATE.game.is_last_round:
+    if JSONG_STATE.game.is_active:
         await broadcast(messages.downloading_track())
 
 
