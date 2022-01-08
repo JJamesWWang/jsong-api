@@ -10,7 +10,7 @@ from jsong.member import connect, Member
 from jsong.audio.playlist import Playlist, Track
 from jsong.audio.spotify import get_playlist
 from jsong.audio.downloader import download
-from jsong.audio.audiosplicer import splice, temp_fileize
+from jsong.audio.audiosplicer import splice, temp_file
 from jsong.game import Game
 import jsong.messages as messages
 
@@ -38,7 +38,7 @@ class GlobalState:  # my greatest mistake, but it works
 
 JSONG_STATE: GlobalState = GlobalState()
 WAIT_FOR_READY_TIMEOUT = 5
-WAIT_FOR_FILE_TIMEOUT = 10
+
 
 
 @app.websocket("/ws/{username}")
@@ -174,15 +174,10 @@ async def set_ready(uid: str):
 
 @app.get("/lobby/track", status_code=200)
 async def get_current_track():
-    track = JSONG_STATE.game.current_track
-    count = 0
-    while count < WAIT_FOR_FILE_TIMEOUT:
-        try:
-            return FileResponse(temp_fileize(track))
-        except Exception:
-            await asyncio.sleep(1)
-            count += 1
-    raise HTTPException(status_code=500, detail="Failed to get track")
+    try:
+        return FileResponse(temp_file())
+    except Exception:
+        raise HTTPException(status_code=500, detail="Failed to get track")
 
 
 async def end_round():
