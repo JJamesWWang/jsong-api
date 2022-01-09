@@ -1,8 +1,8 @@
 services:
   web:
-    image: jsong
+    image: jsong-api
     build: .
-    command: uvicorn jsong.main:app --host 0.0.0.0
+    command: uvicorn jsong.main:app --host 0.0.0.0 --reload
     volumes:
       - .:/code
     ports:
