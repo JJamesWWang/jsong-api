@@ -76,7 +76,7 @@ def test_round_time_remaining(game: Game):
     assert game.round_time_remaining == 0
 
 
-def test_guess_correct(game: Game, player: Player, playlist: Playlist):
+def test_guess_correct_title(game: Game, player: Player, playlist: Playlist):
     game.start_round_time = time.time() - game.settings.play_length + 0.05
     game.advance_round()
     assert game.guess(player.uid, playlist.tracks[0].name)
@@ -96,6 +96,18 @@ def test_guess_correct(game: Game, player: Player, playlist: Playlist):
     assert game.players[player.uid].is_correct is True
 
 
+def test_guess_correct_artist(game: Game, player: Player, playlist: Playlist):
+    game.start_round_time = time.time() - game.settings.play_length + 0.05
+    game.advance_round()
+    assert game.guess(player.uid, playlist.tracks[0].artists[0])
+    assert (
+        POINTS_PER_CORRECT_GUESS / 2
+        <= game.players[player.uid].score
+        <= POINTS_PER_CORRECT_GUESS
+    )
+    assert game.players[player.uid].is_correct is True
+
+
 def test_matches_title(game: Game):
     # exact match
     assert game.matches_title("I don't know", "I don't know")
@@ -111,6 +123,13 @@ def test_matches_title(game: Game):
     assert game.matches_title("I don't know (몰라요)", "I don't know (몰라요)")
     # no match
     assert not game.matches_title("I know", "I don't know")
+
+
+def matches_artist(game: Game):
+    # match 1
+    assert game.matches_artist("Apink", ["Apink", "OH MY GIRL"])
+    # match 2
+    assert game.matches_artist("oh  my  girl ", ["Apink", "OH MY GIRL"])
 
 
 def test_guess_twice_no_result(game: Game, player: Player, playlist: Playlist):

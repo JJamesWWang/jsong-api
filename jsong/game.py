@@ -54,7 +54,9 @@ class Game:
         if self._should_give_points(uid, guess):
             player = self.players[uid]
             self.players[uid] = replace(
-                player, score=self.calculate_new_score(player.score), is_correct=True
+                player,
+                score=self.calculate_new_score(guess, player.score),
+                is_correct=True,
             )
             return True
         return False
@@ -62,31 +64,43 @@ class Game:
     def _should_give_points(self, uid: str, guess: str):
         return (
             self.is_round_active
-            and self.matches_title(guess, self.current_track.name)
             and self.players[uid].is_correct is False
+            and (
+                self.matches_title(guess, self.current_track.name)
+                or self.matches_artist(guess, self.current_track.artists)
+            )
         )
 
     def matches_title(self, guess: str, title: str):
-        guess, title = " ".join(guess.lower().strip().split()), " ".join(
-            title.lower().strip().split()
-        )
+        guess, title = self.normalize(guess), self.normalize(title)
         if guess == title:
             return True
         left_parenthesis, right_parenthesis = title.find("("), title.rfind(")")
         if left_parenthesis != -1 and right_parenthesis != -1:
-            main_title = title[:left_parenthesis].strip()
-            alt_title = title[left_parenthesis + 1 : right_parenthesis].strip()
+            main_title = self.normalize(title[:left_parenthesis])
+            alt_title = self.normalize(title[left_parenthesis + 1 : right_parenthesis])
             return guess in [main_title, alt_title]
         return False
 
-    def calculate_new_score(self, score: int):
-        # exponential decay to reward faster guesses
-        return score + (
-            round(
-                pow(11, self.round_time_remaining / self.settings.play_length)
-                * POINTS_PER_CORRECT_GUESS
-            )
+    def normalize(self, string: str):
+        return " ".join(string.lower().strip().split())
+
+    def matches_artist(self, guess: str, artists: list):
+        guess, artists = self.normalize(guess), [
+            self.normalize(artist) for artist in artists
+        ]
+        if guess in artists:
+            return True
+
+    # exponential decay to reward faster guesses
+    def calculate_new_score(self, guess: str, score: int):
+        points_awarded = round(
+            pow(11, self.round_time_remaining / self.settings.play_length)
+            * POINTS_PER_CORRECT_GUESS
         )
+        if self.matches_artist(guess, self.current_track.artists):
+            points_awarded //= 2
+        return score + points_awarded
 
     def advance_round(self):
         if self.is_active:
