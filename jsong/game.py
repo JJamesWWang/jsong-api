@@ -44,9 +44,7 @@ class Game:
 
     @property
     def round_time_remaining(self):
-        return max(
-            0, self.settings.play_length - (time.time() - self.start_round_time)
-        )
+        return max(0, self.settings.play_length - (time.time() - self.start_round_time))
 
     @property
     def is_round_active(self):
@@ -71,8 +69,10 @@ class Game:
     def calculate_new_score(self, score: int):
         # exponential decay to reward faster guesses
         return score + (
-            pow(11, self.round_time_remaining / self.settings.start_round_delay)
-            * POINTS_PER_CORRECT_GUESS
+            round(
+                pow(11, self.round_time_remaining / self.settings.play_length)
+                * POINTS_PER_CORRECT_GUESS
+            )
         )
 
     def advance_round(self):
