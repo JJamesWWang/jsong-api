@@ -30,7 +30,7 @@ class Game:
         self.settings = settings or GameSettings(playlist_name=playlist.name)
         self.rounds = 0
         self.current_track: Track = None
-        self.round_start_time = 0
+        self.start_round_time = 0
 
     @classmethod
     def empty(cls):
@@ -45,7 +45,7 @@ class Game:
     @property
     def round_time_remaining(self):
         return max(
-            0, self.settings.play_length - (time.time() - self.round_start_time)
+            0, self.settings.play_length - (time.time() - self.start_round_time)
         )
 
     @property
