@@ -1,5 +1,5 @@
 import pytest
-from playlist import Track
+from playlist import encode, Track
 from downloader import DownloadedTrack, download, fileize
 from pathlib import Path
 import os
@@ -21,4 +21,5 @@ def test_download(track: Track):
 def test_fileize(track: Track):
     dtrack = DownloadedTrack(track=track, extension="webm")
     BASE_DIR = Path(__file__).resolve().parent.parent.parent
-    assert fileize(dtrack) == f"{BASE_DIR}/downloads/Bon Bon Chocolat - EVERGLOW.webm"
+    encoded = encode(track)
+    assert fileize(dtrack) == f"{BASE_DIR}/downloads/{encoded}.webm"

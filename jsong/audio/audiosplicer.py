@@ -1,7 +1,6 @@
 from pydub import AudioSegment
 from pathlib import Path
 import os
-from jsong.audio.playlist import querify, Track
 from jsong.audio.downloader import fileize, DownloadedTrack
 
 

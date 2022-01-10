@@ -1,5 +1,5 @@
 import youtube_dl
-from jsong.audio.playlist import querify, Track
+from jsong.audio.playlist import querify, encode, Track
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -15,7 +15,7 @@ def _generate_options(track: Track) -> dict:
     return {
         "format": "bestaudio/best",
         "noplaylist": True,
-        "outtmpl": f"{BASE_DIR}/downloads/{querify(track)}.%(ext)s",
+        "outtmpl": f"{BASE_DIR}/downloads/{encode(track)}.%(ext)s",
         "external_downloader": "aria2c",
         "external_downloader_args": ["-s 16", "-x 16", "-k 1M"],
     }
@@ -23,7 +23,7 @@ def _generate_options(track: Track) -> dict:
 
 def fileize(dtrack: DownloadedTrack):
     BASE_DIR = Path(__file__).resolve().parent.parent.parent
-    return f"{BASE_DIR}/downloads/{querify(dtrack.track)}.{dtrack.extension}"
+    return f"{BASE_DIR}/downloads/{encode(dtrack.track)}.{dtrack.extension}"
 
 
 def download(track: Track) -> DownloadedTrack:
