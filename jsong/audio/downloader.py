@@ -16,6 +16,7 @@ def _generate_options(track: Track) -> dict:
         "format": "bestaudio/best",
         "noplaylist": True,
         "outtmpl": f"{BASE_DIR}/downloads/{encode(track)}.%(ext)s",
+        "cookiefile": f"{BASE_DIR}/cookies.txt",
         "external_downloader": "aria2c",
         "external_downloader_args": ["-s 16", "-x 16", "-k 1M"],
     }
