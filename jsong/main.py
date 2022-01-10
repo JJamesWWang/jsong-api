@@ -31,14 +31,9 @@ class GlobalState:  # my greatest mistake, but it works
     playlist: Playlist = None
     game: Game = Game.empty()
 
-    @classmethod
-    def with_members(cls, state, members):
-        return cls(members, state.playlist)
-
 
 JSONG_STATE: GlobalState = GlobalState()
 WAIT_FOR_READY_TIMEOUT = 5
-
 
 
 @app.websocket("/ws/{username}")
