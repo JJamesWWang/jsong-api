@@ -4,6 +4,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from toolz import dicttoolz
 import asyncio
+import time
 import random
 from dataclasses import replace
 from jsong.member import connect, Member
@@ -177,6 +178,7 @@ async def get_current_track():
 
 async def end_round():
     await wait_post_start_round()
+    JSONG_STATE.game.start_round_time = time.time()
     await wait_until_track_done_playing()
     await broadcast(messages.end_round(JSONG_STATE.game))
     JSONG_STATE.game.advance_round()
