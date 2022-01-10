@@ -96,6 +96,23 @@ def test_guess_correct(game: Game, player: Player, playlist: Playlist):
     assert game.players[player.uid].is_correct is True
 
 
+def test_matches_title(game: Game):
+    # exact match
+    assert game.matches_title("I don't know", "I don't know")
+    # lowercase match
+    assert game.matches_title("i don't know", "I don't know")
+    # whitespace ignored
+    assert game.matches_title("I  don't  know   ", "I don't know")
+    # main title match
+    assert game.matches_title("I don't know", "I don't know (몰라요)")
+    # alt title match
+    assert game.matches_title("몰라요", "I don't know (몰라요)")
+    # both match
+    assert game.matches_title("I don't know (몰라요)", "I don't know (몰라요)")
+    # no match
+    assert not game.matches_title("I know", "I don't know")
+
+
 def test_guess_twice_no_result(game: Game, player: Player, playlist: Playlist):
     game.start_round_time = time.time()
     game.advance_round()

@@ -62,9 +62,22 @@ class Game:
     def _should_give_points(self, uid: str, guess: str):
         return (
             self.is_round_active
-            and self.current_track.name.lower() == guess.lower()
+            and self.matches_title(guess, self.current_track.name)
             and self.players[uid].is_correct is False
         )
+
+    def matches_title(self, guess: str, title: str):
+        guess, title = " ".join(guess.lower().strip().split()), " ".join(
+            title.lower().strip().split()
+        )
+        if guess == title:
+            return True
+        left_parenthesis, right_parenthesis = title.find("("), title.rfind(")")
+        if left_parenthesis != -1 and right_parenthesis != -1:
+            main_title = title[:left_parenthesis].strip()
+            alt_title = title[left_parenthesis + 1 : right_parenthesis].strip()
+            return guess in [main_title, alt_title]
+        return False
 
     def calculate_new_score(self, score: int):
         # exponential decay to reward faster guesses
