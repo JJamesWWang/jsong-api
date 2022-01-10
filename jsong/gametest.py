@@ -1,8 +1,9 @@
 from typing import Iterable
 from jsong.audio.playlist import Playlist, Track
-from jsong.game import Game, GameSettings
+from jsong.game import POINTS_PER_CORRECT_GUESS, Game, GameSettings
 from jsong.player import Player
 import pytest
+import time
 
 
 @pytest.fixture
@@ -57,28 +58,55 @@ def test_init_game_state(
     assert game.is_active is True
     assert game.play_length == 20
     assert game.start_round_delay == 3
+    assert game.round_start_time == 0
+
+
+def test_is_round_active(game: Game):
+    assert game.is_round_active is False
+    game.round_start_time = time.time()
+    assert game.is_round_active is True
+    game.round_start_time = time.time() - game.play_length - 1
+    assert game.is_round_active is False
+
+
+def test_round_time_remaining(game: Game):
+    game.round_start_time = time.time()
+    assert game.play_length - 1 <= game.round_time_remaining <= game.play_length
+    game.round_start_time = time.time() - game.play_length - 1
+    assert game.round_time_remaining == 0
 
 
 def test_guess_correct(game: Game, player: Player, playlist: Playlist):
+    game.round_start_time = time.time() - game.settings.play_length + 0.05
     game.advance_round()
     assert game.guess(player.uid, playlist.tracks[0].name)
-    assert game.players[player.uid].score == 1
+    assert (
+        POINTS_PER_CORRECT_GUESS
+        <= game.players[player.uid].score
+        <= 2 * POINTS_PER_CORRECT_GUESS
+    )
     assert game.players[player.uid].is_correct is True
     game.advance_round()
     assert game.guess(player.uid, playlist.tracks[1].name)
-    assert game.players[player.uid].score == 2
+    assert (
+        2 * POINTS_PER_CORRECT_GUESS
+        <= game.players[player.uid].score
+        <= 3 * POINTS_PER_CORRECT_GUESS
+    )
     assert game.players[player.uid].is_correct is True
 
 
 def test_guess_twice_no_result(game: Game, player: Player, playlist: Playlist):
+    game.round_start_time = time.time()
     game.advance_round()
     assert game.guess(player.uid, playlist.tracks[0].name)
     assert not game.guess(player.uid, playlist.tracks[0].name)
-    assert game.players[player.uid].score == 1
+    assert game.players[player.uid].score >= POINTS_PER_CORRECT_GUESS
     assert game.players[player.uid].is_correct is True
 
 
 def test_guess_incorrect(game: Game, player: Player, playlist: Playlist):
+    game.round_start_time = time.time()
     game.advance_round()
     assert not game.guess(player.uid, playlist.tracks[1].name)
     assert game.players[player.uid].score == 0
