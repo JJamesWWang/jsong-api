@@ -114,27 +114,29 @@ async def play_game(ws1: WebSocket, ws2: WebSocket, member1: dict, member2: dict
 
     tracks = ["GLASSY", "Electric Shock", "D-D-DANCE"]
 
-    round1(ws1, ws2, member1, member2, tracks)
-    round2(ws1, ws2, member1, member2, tracks)
-    round3(ws1, ws2, member1, member2, tracks)
+    await round1(ws1, ws2, member1, member2, tracks)
+    await round2(ws1, ws2, member1, member2, tracks)
+    await round3(ws1, ws2, member1, member2, tracks)
 
     receive_end_game(ws1, ws2)
 
 
-def round1(ws1, ws2, member1, member2, tracks):
+async def round1(ws1, ws2, member1, member2, tracks):
     receive_downloading_track(ws1, ws2)
     receive_next_round(ws1, ws2)
     send_ready(member1, member2)
     receive_start_round(ws1, ws2)
+    await asyncio.sleep(GameSettings.start_round_delay + 1)
     track = receive_end_round(ws1, ws2)
     assert track["name"] in tracks
 
 
-def round2(ws1, ws2, member1, member2, tracks):
+async def round2(ws1, ws2, member1, member2, tracks):
     receive_downloading_track(ws1, ws2)
     receive_next_round(ws1, ws2)
     send_ready(member1, member2)
     receive_start_round(ws1, ws2)
+    await asyncio.sleep(GameSettings.start_round_delay + 1)
     ws1.send_json("glassy")
     ws1.send_json("electric shock")
     ws1.send_json("d-d-dance")
@@ -145,11 +147,12 @@ def round2(ws1, ws2, member1, member2, tracks):
     assert track["name"] in tracks
 
 
-def round3(ws1, ws2, member1, member2, tracks):
+async def round3(ws1, ws2, member1, member2, tracks):
     receive_downloading_track(ws1, ws2)
     receive_next_round(ws1, ws2)
     send_ready(member1, member2)
     receive_start_round(ws1, ws2)
+    await asyncio.sleep(GameSettings.start_round_delay + 1)
     ws1.send_json("glassy")
     ws1.send_json("electric shock")
     ws1.send_json("d-d-dance")
@@ -185,8 +188,6 @@ def find_correct_and_count(ws1: WebSocket, ws2: WebSocket):
 async def test_game_flow():
     with client.websocket_connect("/ws/1") as ws1:
         with client.websocket_connect("/ws/2") as ws2:
-            GameSettings.play_length = 0
-            GameSettings.start_round_delay = 0
             member1, member2 = await set_up_game(ws1, ws2)
             await asyncio.gather(
                 start_game(member1["uid"]), play_game(ws1, ws2, member1, member2)
