@@ -95,7 +95,7 @@ class Game:
     # exponential decay to reward faster guesses
     def calculate_new_score(self, guess: str, score: int):
         points_awarded = round(
-            pow(11, self.round_time_remaining / self.settings.play_length)
+            pow(20, self.round_time_remaining / self.settings.play_length)
             * POINTS_PER_CORRECT_GUESS
         )
         if self.matches_artist(guess, self.current_track.artists):
